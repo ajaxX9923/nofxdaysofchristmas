@@ -5,195 +5,318 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NOFX Days of Christmas</title>
 <style>
-body {
-  font-family: 'Comic Sans MS', Arial, sans-serif;
-  background: linear-gradient(to bottom, #ffefef, #fff5f0);
-  margin: 0;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  overflow-x: hidden;
-  position: relative;
-}
-h1 {
-  text-align: center;
-  color: #d70000;
-  text-shadow: 2px 2px #fff;
-  font-size: 2.5em;
-  margin-bottom: 20px;
-}
-.calendar {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 10px;
-  max-width: 100%;
-  z-index: 2;
-  position: relative;
-}
-.day {
-  background: #ffdddd;
-  border-radius: 15px;
-  padding: 15px;
-  text-align: center;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  transition: transform 0.2s, background 0.2s;
-  font-weight: bold;
-  font-size: 1em;
-}
-.day:hover { transform: scale(1.05); background: #ffe0e0; }
-.day.locked { background: #ccc; pointer-events: none; color: #666; }
-#albumModal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 3;
-  padding: 20px;
-  box-sizing: border-box;
-}
-#albumContent {
-  background: #fff0f0;
-  padding: 20px;
-  border-radius: 15px;
-  width: 100%;
-  max-width: 320px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  border: 2px solid #d70000;
-}
-button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  border: none;
-  background: #d70000;
-  color: #fff;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-}
-button:hover { background: #ff1a1a; }
-.snowflake {
-  position: fixed;
-  top: -10px;
-  color: #fff;
-  font-size: 1em;
-  user-select: none;
-  pointer-events: none;
-  z-index: 1;
-  animation-name: fall;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-@keyframes fall { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(100vh) rotate(360deg); } }
+  body {
+    font-family: 'Comic Sans MS', Arial, sans-serif;
+    background: linear-gradient(to bottom, #ffefef, #fff5f0);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .wrapper {
+    text-align: center;
+  }
+
+  h1 {
+    color: #d70000;
+    text-shadow: 2px 2px #fff;
+    font-size: 2.2em;
+    margin-bottom: 10px;
+  }
+
+  .top-box {
+    display: inline-block;
+    margin-bottom: 15px;
+    padding: 12px 24px;
+    border-radius: 15px;
+    background: #ffdede;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    font-weight: bold;
+    letter-spacing: 2px;
+  }
+
+  .calendar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 2;
+    position: relative;
+  }
+
+  .row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .day {
+    background: #ffdddd;
+    border-radius: 15px;
+    padding: 15px;
+    min-width: 50px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: transform 0.2s, background 0.2s;
+    font-weight: bold;
+    font-size: 1em;
+  }
+
+  .day:hover {
+    transform: scale(1.05);
+    background: #ffe0e0;
+  }
+
+  .day.locked {
+    background: #ccc;
+    pointer-events: none;
+    color: #666;
+  }
+
+  .day.opened {
+    background: #a0ffa0;
+  }
+
+  #albumModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  #albumContent {
+    background: #fff0f0;
+    padding: 20px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    border: 2px solid #d70000;
+  }
+
+  button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    border: none;
+    background: #d70000;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  button:hover {
+    background: #ff1a1a;
+  }
+
+  .snowflake {
+    position: fixed;
+    top: -10px;
+    color: #fff;
+    font-size: 1em;
+    user-select: none;
+    pointer-events: none;
+    z-index: 1;
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes fall {
+    0%   { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(100vh) rotate(360deg); }
+  }
 </style>
 </head>
 <body>
-<div>
-<h1>NOFX Days of Christmas</h1>
-<div class="calendar" id="calendar"></div>
+<div class="wrapper">
+  <h1>NOFX Days of Christmas</h1>
+  <div class="top-box">NOFX</div>
+
+  <div class="calendar" id="calendar"></div>
 </div>
+
 <div id="albumModal">
-<div id="albumContent">
-<h2 id="albumTitle"></h2>
-<button onclick="closeModal()">Close</button>
+  <div id="albumContent">
+    <h2 id="albumTitle"></h2>
+    <button onclick="closeModal()">Close</button>
+  </div>
 </div>
-</div>
+
 <script>
-const albums = [
-  "Liberal Animation",
-  "S&M Airlines",
-  "Ribbed",
-  "White Trash, Two Heebs and a Bean",
-  "Punk in Drublic",
-  "Heavy Petting Zoo",
-  "So Long and Thanks for All the Shoes",
-  "Pump Up the Valuum",
-  "The War on Errorism",
-  "Wolves in Wolves’ Clothing",
-  "Coaster",
-  "Self Entitled",
-  "First Ditch Effort",
-  "Single Album",
-  "Double Album",
-  "Half Album",
-  "Maximum RocknRoll",
-  "45 or 46 Songs That Weren’t Good Enough to Go on Our Other Records",
-  "The Longest EP",
-  "Backstage Passport Soundtrack",
-  "I Heard They Suck Live!!",
-  "They’ve Actually Gotten Worse Live!",
-  "The Splits",
-  "The Decline"
-];
+  // ---- CONFIG / DATA ----
+  const albums = [
+    "Liberal Animation",
+    "S&M Airlines",
+    "Ribbed",
+    "White Trash, Two Heebs and a Bean",
+    "Punk in Drublic",
+    "Heavy Petting Zoo",
+    "So Long and Thanks for All the Shoes",
+    "Pump Up the Valuum",
+    "The War on Errorism",
+    "Wolves in Wolves’ Clothing",
+    "Coaster",
+    "Self Entitled",
+    "First Ditch Effort",
+    "Single Album",
+    "Double Album",
+    "Half Album",
+    "Maximum RocknRoll",
+    "45 or 46 Songs That Weren’t Good Enough to Go on Our Other Records",
+    "The Longest EP",
+    "Backstage Passport Soundtrack",
+    "I Heard They Suck Live!!",
+    "They’ve Actually Gotten Worse Live!",
+    "The Splits",
+    "The Decline"
+  ];
 
-let savedAlbums = localStorage.getItem('shuffledAlbums');
-let openedDays = JSON.parse(localStorage.getItem('openedDays')) || {};
-let shuffledAlbums;
+  // Tree rows: total slots = 24
+  const rowStructure = [3, 4, 5, 6, 6]; // 3+4+5+6+6 = 24
 
-if(savedAlbums) {
-  try {
-    shuffledAlbums = JSON.parse(savedAlbums);
-  } catch(e) {
-    shuffledAlbums = shuffleArray([...albums]);
-    localStorage.setItem('shuffledAlbums', JSON.stringify(shuffledAlbums));
+  const STORAGE_PREFIX = "nofx_days_v2_";
+  const KEY_ALBUMS = STORAGE_PREFIX + "albums";
+  const KEY_DOOR_NUMBERS = STORAGE_PREFIX + "door_numbers";
+  const KEY_OPENED = STORAGE_PREFIX + "opened_positions";
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
   }
-} else {
-  shuffledAlbums = shuffleArray([...albums]);
-  localStorage.setItem('shuffledAlbums', JSON.stringify(shuffledAlbums));
-}
 
-const today = 24; // for testing; change to dynamic if desired
-const container = document.getElementById('calendar');
+  function loadJSON(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return fallback;
+      return JSON.parse(raw);
+    } catch (e) {
+      return fallback;
+    }
+  }
 
-// Create random positions for day numbers
-let dayNumbers = Array.from({length: 24}, (_, i) => i + 1);
-dayNumbers = shuffleArray(dayNumbers);
+  function saveJSON(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
 
-for(let i=0;i<24;i++){
-  const dayNum = dayNumbers[i];
-  const div = document.createElement('div');
-  div.className = 'day';
-  if(dayNum > today) div.classList.add('locked');
-  div.innerText = dayNum;
-  div.onclick = () => openAlbum(dayNum);
-  container.appendChild(div);
-  if(openedDays[dayNum]) div.style.background = '#a0ffa0';
-}
+  // ---- INITIALISE PER-VISITOR STATE ----
 
-function openAlbum(day){
-  const album = shuffledAlbums[day-1];
-  document.getElementById('albumTitle').innerText = album;
-  document.getElementById('albumModal').style.display = 'flex';
-  openedDays[day] = true;
-  localStorage.setItem('openedDays', JSON.stringify(openedDays));
-  // mark visual opened
-  const children = Array.from(container.children);
-  const idx = children.findIndex(c => parseInt(c.innerText) === day);
-  if(idx !== -1) children[idx].style.background = '#a0ffa0';
-}
+  // 1) Shuffled albums (per position 0..23), stable per visitor
+  let shuffledAlbums = loadJSON(KEY_ALBUMS, null);
+  if (!shuffledAlbums || shuffledAlbums.length !== albums.length) {
+    shuffledAlbums = shuffleArray([...albums]);
+    saveJSON(KEY_ALBUMS, shuffledAlbums);
+  }
 
-function closeModal(){document.getElementById('albumModal').style.display='none';}
+  // 2) Shuffled door numbers 1..24, stable per visitor
+  let doorNumbers = loadJSON(KEY_DOOR_NUMBERS, null);
+  if (!doorNumbers || doorNumbers.length !== 24) {
+    doorNumbers = shuffleArray(Array.from({ length: 24 }, (_, i) => i + 1));
+    saveJSON(KEY_DOOR_NUMBERS, doorNumbers);
+  }
 
-function shuffleArray(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]];}return array;}
+  // 3) Opened positions (by index 0..23), stable per visitor
+  let openedPositions = loadJSON(KEY_OPENED, {});
 
-function createSnowflake(){
-  const snowflake = document.createElement('div');
-  snowflake.className='snowflake';
-  snowflake.style.left = Math.random()*window.innerWidth+'px';
-  snowflake.style.fontSize = Math.random()*20+10+'px';
-  snowflake.style.animationDuration = Math.random()*5+5+'s';
-  snowflake.style.opacity = Math.random();
-  snowflake.textContent='❄';
-  document.body.appendChild(snowflake);
-  setTimeout(()=>{snowflake.remove();},10000);
-}
-setInterval(createSnowflake,200);
+  // Optional: lock by real date (1–24); for now, unlocked for testing
+  const today = 24; // change to: new Date().getDate() in December if you want real locking
+
+  const calendarEl = document.getElementById("calendar");
+
+  // ---- BUILD TREE LAYOUT ----
+  let positionIndex = 0; // 0..23
+
+  rowStructure.forEach(rowSize => {
+    const rowEl = document.createElement("div");
+    rowEl.className = "row";
+
+    for (let i = 0; i < rowSize; i++) {
+      const doorEl = document.createElement("div");
+      doorEl.className = "day";
+
+      const doorNumber = doorNumbers[positionIndex]; // label
+      doorEl.innerText = doorNumber;
+
+      // Lock future days if you want date-based advent
+      if (doorNumber > today) {
+        // doorEl.classList.add("locked");
+      }
+
+      // Restore opened visual state
+      if (openedPositions[positionIndex]) {
+        doorEl.classList.add("opened");
+      }
+
+      // Capture index for click handler
+      const indexForClick = positionIndex;
+      doorEl.onclick = () => openDoor(indexForClick);
+
+      rowEl.appendChild(doorEl);
+      positionIndex++;
+    }
+
+    calendarEl.appendChild(rowEl);
+  });
+
+  // ---- DOOR OPEN LOGIC ----
+  function openDoor(positionIndex) {
+    const album = shuffledAlbums[positionIndex];
+    document.getElementById("albumTitle").innerText = album;
+    document.getElementById("albumModal").style.display = "flex";
+
+    // Mark as opened and persist
+    openedPositions[positionIndex] = true;
+    saveJSON(KEY_OPENED, openedPositions);
+
+    // Update visual
+    const allRows = Array.from(calendarEl.querySelectorAll(".row"));
+    let counter = 0;
+    for (const row of allRows) {
+      const children = Array.from(row.children);
+      for (const child of children) {
+        if (counter === positionIndex) {
+          child.classList.add("opened");
+          return;
+        }
+        counter++;
+      }
+    }
+  }
+
+  function closeModal() {
+    document.getElementById("albumModal").style.display = "none";
+  }
+
+  // ---- SNOW EFFECT ----
+  function createSnowflake() {
+    const snowflake = document.createElement("div");
+    snowflake.className = "snowflake";
+    snowflake.style.left = Math.random() * window.innerWidth + "px";
+    snowflake.style.fontSize = Math.random() * 20 + 10 + "px";
+    snowflake.style.animationDuration = Math.random() * 5 + 5 + "s";
+    snowflake.style.opacity = Math.random();
+    snowflake.textContent = "❄";
+    document.body.appendChild(snowflake);
+    setTimeout(() => snowflake.remove(), 10000);
+  }
+
+  setInterval(createSnowflake, 200);
 </script>
 </body>
 </html>
