@@ -60,7 +60,7 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     transition: transform 0.2s, background 0.2s;
     font-weight: bold;
-    font-size: 1em;
+    font-size: 0.9em;
   }
 
   .day:hover {
@@ -68,14 +68,14 @@
     background: #ffe0e0;
   }
 
-  .day.locked {
-    background: #ccc;
-    pointer-events: none;
-    color: #666;
-  }
-
   .day.opened {
     background: #a0ffa0;
+  }
+
+  .day.star {
+    background: #ffe8a0;
+    border: 2px solid #ffcc00;
+    box-shadow: 0 4px 10px rgba(255, 204, 0, 0.5);
   }
 
   #albumModal {
@@ -155,7 +155,7 @@
 </div>
 
 <script>
-  // Album list (1 per door)
+  // 23 albums to match 23 doors in this tree shape
   const albums = [
     "Liberal Animation",
     "S&M Airlines",
@@ -179,16 +179,18 @@
     "Backstage Passport Soundtrack",
     "I Heard They Suck Live!!",
     "They’ve Actually Gotten Worse Live!",
-    "The Splits",
     "The Decline"
   ];
 
-  // Tree body rows (no trunk): 1+2+3+4+5+6 = 21 positions
+  // Tree body like your picture: 1,2,3,4,5,6 = 21 tiles
   const bodyRowStructure = [1, 2, 3, 4, 5, 6];
-  // Trunk: 3 vertical boxes under the centre
-  const trunkHeight = 3;
+  // Trunk: 2 tiles stacked = 2, total 23
+  const trunkHeight = 2;
 
-  const STORAGE_PREFIX = "nofx_tree_v1_";
+  const POSITIONS_COUNT =
+    bodyRowStructure.reduce((a, b) => a + b, 0) + trunkHeight; // 23
+
+  const STORAGE_PREFIX = "nofx_tree_star_v2_";
   const KEY_ALBUMS = STORAGE_PREFIX + "albums";
   const KEY_DOOR_NUMBERS = STORAGE_PREFIX + "door_numbers";
   const KEY_OPENED = STORAGE_PREFIX + "opened_positions";
@@ -215,37 +217,49 @@
     localStorage.setItem(key, JSON.stringify(value));
   }
 
-  // ----- PER VISITOR STATE -----
+  // ----- PER-VISITOR STATE -----
 
-  // 1) Shuffled albums per position (0..23)
+  // 1) Shuffled albums per position (0..22)
   let shuffledAlbums = loadJSON(KEY_ALBUMS, null);
   if (!shuffledAlbums || shuffledAlbums.length !== albums.length) {
     shuffledAlbums = shuffleArray([...albums]);
     saveJSON(KEY_ALBUMS, shuffledAlbums);
   }
 
-  // 2) Door numbers per position (0..23)
-  //    position 0 (top) is ALWAYS number 24 (the star).
-  //    positions 1..23 are a random permutation of 1..23.
+  // 2) Door numbers per position (0..22)
+  //    position 0 is ALWAYS 24 (star)
+  //    positions 1..22 are random from 1..23
   let doorNumbers = loadJSON(KEY_DOOR_NUMBERS, null);
-  if (!doorNumbers || doorNumbers.length !== 24 || doorNumbers[0] !== 24) {
-    const rest = shuffleArray(Array.from({ length: 23 }, (_, i) => i + 1)); // 1..23
-    doorNumbers = [24, ...rest];
+  if (!doorNumbers || doorNumbers.length !== POSITIONS_COUNT || doorNumbers[0] !== 24) {
+    const pool = shuffleArray(Array.from({ length: 23 }, (_, i) => i + 1)); // 1..23
+    doorNumbers = [24, ...pool.slice(0, POSITIONS_COUNT - 1)];
     saveJSON(KEY_DOOR_NUMBERS, doorNumbers);
   }
 
-  // 3) Opened positions (by index 0..23)
+  // 3) Opened positions (by index 0..22)
   let openedPositions = loadJSON(KEY_OPENED, {});
 
   const calendarEl = document.getElementById("calendar");
   const trunkEl = document.getElementById("trunk");
   const doorElements = []; // index -> DOM element
 
-  // Optional: real-day locking; for now everything is openable
-  const today = 24; // in December you could use: new Date().getDate();
+  // Optional: date-based locking (off for now)
+  const today = 24; // or new Date().getDate() in December
 
-  // ----- BUILD TREE BODY -----
-  let positionIndex = 0; // 0..20 for body, then trunk
+  // Helper to set the door label (number vs number + album)
+  function setDoorLabel(el, positionIndex) {
+    const number = doorNumbers[positionIndex];
+    const albumName = shuffledAlbums[positionIndex];
+
+    if (openedPositions[positionIndex]) {
+      el.innerText = number + " - " + albumName;
+    } else {
+      el.innerText = number;
+    }
+  }
+
+  // ----- BUILD TREE BODY (including star at top) -----
+  let positionIndex = 0;
 
   bodyRowStructure.forEach(rowSize => {
     const row = document.createElement("div");
@@ -255,11 +269,11 @@
       const door = document.createElement("div");
       door.className = "day";
 
-      const number = doorNumbers[positionIndex];
-      door.innerText = number;
+      setDoorLabel(door, positionIndex);
 
-      if (number > today) {
-        // door.classList.add("locked"); // enable if you want date locking
+      // Make the very first tile the star (24)
+      if (positionIndex === 0) {
+        door.classList.add("star");
       }
 
       if (openedPositions[positionIndex]) {
@@ -277,17 +291,12 @@
     calendarEl.appendChild(row);
   });
 
-  // ----- BUILD TRUNK (3 tiles under the centre) -----
+  // ----- BUILD TRUNK (2 tiles stacked) -----
   for (let t = 0; t < trunkHeight; t++) {
     const door = document.createElement("div");
     door.className = "day";
 
-    const number = doorNumbers[positionIndex];
-    door.innerText = number;
-
-    if (number > today) {
-      // door.classList.add("locked");
-    }
+    setDoorLabel(door, positionIndex);
 
     if (openedPositions[positionIndex]) {
       door.classList.add("opened");
@@ -311,7 +320,10 @@
     saveJSON(KEY_OPENED, openedPositions);
 
     const door = doorElements[positionIndex];
-    if (door) door.classList.add("opened");
+    if (door) {
+      door.classList.add("opened");
+      setDoorLabel(door, positionIndex);
+    }
   }
 
   function closeModal() {
