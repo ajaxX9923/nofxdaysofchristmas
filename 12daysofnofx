@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NOFX Advent Calendar</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', Arial, sans-serif;
+      background: linear-gradient(to bottom, #ffefef, #fff5f0);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    h1 {
+      text-align: center;
+      color: #d70000;
+      text-shadow: 2px 2px #fff;
+      font-size: 3em;
+      margin-bottom: 20px;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 15px;
+      max-width: 900px;
+      z-index: 2;
+      position: relative;
+    }
+
+    .day {
+      background: #ffdddd;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s, background 0.2s;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    .day:hover {
+      transform: scale(1.1);
+      background: #ffe0e0;
+    }
+
+    .day.locked {
+      background: #ccc;
+      pointer-events: none;
+      color: #666;
+    }
+
+    #albumModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+    }
+
+    #albumContent {
+      background: #fff0f0;
+      padding: 30px;
+      border-radius: 15px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      border: 2px solid #d70000;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      background: #d70000;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #ff1a1a;
+    }
+
+    /* Snow effect */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: #fff;
+      font-size: 1em;
+      user-select: none;
+      pointer-events: none;
+      z-index: 1;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(100vh) rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<div>
+  <h1>NOFX Christmas Advent Calendar</h1>
+  <div class="calendar" id="calendar"></div>
+</div>
+
+<div id="albumModal">
+  <div id="albumContent">
+    <h2 id="albumTitle"></h2>
+    <p id="albumArtist"></p>
+    <button onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+  const albums = [
+    { title: "Liberal Animation", artist: "NOFX" },
+    { title: "S&M Airlines", artist: "NOFX" },
+    { title: "Ribbed", artist: "NOFX" },
+    { title: "White Trash, Two Heebs and a Bean", artist: "NOFX" },
+    { title: "Punk in Drublic", artist: "NOFX" },
+    { title: "Heavy Petting Zoo", artist: "NOFX" },
+    { title: "So Long and Thanks for All the Shoes", artist: "NOFX" },
+    { title: "Pump Up the Valuum", artist: "NOFX" },
+    { title: "The War on Errorism", artist: "NOFX" },
+    { title: "Wolves in Wolves’ Clothing", artist: "NOFX" },
+    { title: "Coaster", artist: "NOFX" },
+    { title: "Self Entitled", artist: "NOFX" },
+    { title: "First Ditch Effort", artist: "NOFX" },
+    { title: "Single Album", artist: "NOFX" },
+    { title: "Double Album", artist: "NOFX" },
+    { title: "Half Album", artist: "NOFX" },
+    { title: "Maximum RocknRoll", artist: "NOFX" },
+    { title: "45 or 46 Songs That Weren’t Good Enough to Go on Our Other Records", artist: "NOFX" },
+    { title: "The Longest EP", artist: "NOFX" },
+    { title: "Backstage Passport Soundtrack", artist: "NOFX" },
+    { title: "I Heard They Suck Live!!", artist: "NOFX" },
+    { title: "They’ve Actually Gotten Worse Live!", artist: "NOFX" },
+    { title: "The Splits", artist: "NOFX" },
+    { title: "The Decline", artist: "NOFX" }
+  ];
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  const shuffledAlbums = shuffleArray([...albums]);
+  const today = 24; // unlock all days for testing
+  const container = document.getElementById('calendar');
+
+  for (let i = 1; i <= 24; i++) {
+    const div = document.createElement('div');
+    div.className = 'day';
+    if (i > today) div.classList.add('locked');
+    div.innerText = i;
+    div.onclick = () => openAlbum(i);
+    container.appendChild(div);
+  }
+
+  function openAlbum(day) {
+    const album = shuffledAlbums[day - 1];
+    document.getElementById('albumTitle').innerText = album.title;
+    document.getElementById('albumArtist').innerText = album.artist;
+    document.getElementById('albumModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('albumModal').style.display = 'none';
+  }
+
+  // Snow effect
+  function createSnowflake() {
+    const snowflake = document.createElement('div');
+    snowflake.className = 'snowflake';
+    snowflake.style.left = Math.random() * window.innerWidth + 'px';
+    snowflake.style.fontSize = Math.random() * 20 + 10 + 'px';
+    snowflake.style.animationDuration = Math.random() * 5 + 5 + 's';
+    snowflake.style.opacity = Math.random();
+    snowflake.textContent = '❄';
+    document.body.appendChild(snowflake);
+    setTimeout(() => {
+      snowflake.remove();
+    }, 10000);
+  }
+
+  setInterval(createSnowflake, 200);
+</script>
+
+</body>
+</html>
