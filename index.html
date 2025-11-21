@@ -27,13 +27,39 @@
     margin-bottom: 10px;
   }
 
+  /* Tree container with green triangle background */
+  .tree-container {
+    position: relative;
+    display: inline-block;
+    padding-top: 40px;  /* space for the star to “float” above tree */
+  }
+
+  .tree-container::before {
+    content: "";
+    position: absolute;
+    top: 55px;            /* start of the green tree (under the star row) */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 180px solid transparent;
+    border-right: 180px solid transparent;
+    border-bottom: 280px solid #0b5d2a; /* green tree */
+    opacity: 0.85;
+    z-index: 0;
+  }
+
+  .calendar,
+  .trunk {
+    position: relative;
+    z-index: 1; /* on top of tree background */
+  }
+
   .calendar {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    z-index: 2;
-    position: relative;
   }
 
   .row {
@@ -61,6 +87,7 @@
     transition: transform 0.2s, background 0.2s;
     font-weight: bold;
     font-size: 0.9em;
+    line-height: 1.2;
   }
 
   .day:hover {
@@ -84,7 +111,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0,  0, 0.7);
     display: none;
     align-items: center;
     justify-content: center;
@@ -142,9 +169,10 @@
 <div class="wrapper">
   <h1>NOFX Days of Christmas</h1>
 
-  <div class="calendar" id="calendar"></div>
-
-  <div class="trunk" id="trunk"></div>
+  <div class="tree-container">
+    <div class="calendar" id="calendar"></div>
+    <div class="trunk" id="trunk"></div>
+  </div>
 </div>
 
 <div id="albumModal">
@@ -155,7 +183,7 @@
 </div>
 
 <script>
-  // 23 albums to match 23 doors in this tree shape
+  // 24 albums – one for each door
   const albums = [
     "Liberal Animation",
     "S&M Airlines",
@@ -179,18 +207,22 @@
     "Backstage Passport Soundtrack",
     "I Heard They Suck Live!!",
     "They’ve Actually Gotten Worse Live!",
+    "The Splits",
     "The Decline"
   ];
 
-  // Tree body like your picture: 1,2,3,4,5,6 = 21 tiles
+  // Layout:
+  // star row: 1 tile (24)
+  // tree body rows: 1,2,3,4,5,6 = 21 tiles
+  // trunk: 2 tiles stacked
+  const STAR_ROWS = 1;
   const bodyRowStructure = [1, 2, 3, 4, 5, 6];
-  // Trunk: 2 tiles stacked = 2, total 23
   const trunkHeight = 2;
 
   const POSITIONS_COUNT =
-    bodyRowStructure.reduce((a, b) => a + b, 0) + trunkHeight; // 23
+    STAR_ROWS + bodyRowStructure.reduce((a, b) => a + b, 0) + trunkHeight; // 24
 
-  const STORAGE_PREFIX = "nofx_tree_star_v2_";
+  const STORAGE_PREFIX = "nofx_tree_star_v4_";
   const KEY_ALBUMS = STORAGE_PREFIX + "albums";
   const KEY_DOOR_NUMBERS = STORAGE_PREFIX + "door_numbers";
   const KEY_OPENED = STORAGE_PREFIX + "opened_positions";
@@ -219,24 +251,24 @@
 
   // ----- PER-VISITOR STATE -----
 
-  // 1) Shuffled albums per position (0..22)
+  // 1) Shuffled albums per position (0..23)
   let shuffledAlbums = loadJSON(KEY_ALBUMS, null);
   if (!shuffledAlbums || shuffledAlbums.length !== albums.length) {
     shuffledAlbums = shuffleArray([...albums]);
     saveJSON(KEY_ALBUMS, shuffledAlbums);
   }
 
-  // 2) Door numbers per position (0..22)
-  //    position 0 is ALWAYS 24 (star)
-  //    positions 1..22 are random from 1..23
+  // 2) Door numbers per position (0..23)
+  //    position 0 (very top) is ALWAYS number 24 (star)
+  //    positions 1..23 are a random permutation of 1..23
   let doorNumbers = loadJSON(KEY_DOOR_NUMBERS, null);
   if (!doorNumbers || doorNumbers.length !== POSITIONS_COUNT || doorNumbers[0] !== 24) {
-    const pool = shuffleArray(Array.from({ length: 23 }, (_, i) => i + 1)); // 1..23
-    doorNumbers = [24, ...pool.slice(0, POSITIONS_COUNT - 1)];
+    const rest = shuffleArray(Array.from({ length: 23 }, (_, i) => i + 1)); // 1..23
+    doorNumbers = [24, ...rest];
     saveJSON(KEY_DOOR_NUMBERS, doorNumbers);
   }
 
-  // 3) Opened positions (by index 0..22)
+  // 3) Opened positions (by index 0..23)
   let openedPositions = loadJSON(KEY_OPENED, {});
 
   const calendarEl = document.getElementById("calendar");
@@ -246,21 +278,40 @@
   // Optional: date-based locking (off for now)
   const today = 24; // or new Date().getDate() in December
 
-  // Helper to set the door label (number vs number + album)
+  // Helper to set the door label:
+  // closed -> just the number
+  // opened -> number (line 1), album (line 2)
   function setDoorLabel(el, positionIndex) {
     const number = doorNumbers[positionIndex];
     const albumName = shuffledAlbums[positionIndex];
 
     if (openedPositions[positionIndex]) {
-      el.innerText = number + " - " + albumName;
+      el.innerHTML = number + "<br>" + albumName;
     } else {
-      el.innerText = number;
+      el.textContent = number;
     }
   }
 
-  // ----- BUILD TREE BODY (including star at top) -----
   let positionIndex = 0;
 
+  // ----- STAR ROW (position 0, number 24) -----
+  const starRow = document.createElement("div");
+  starRow.className = "row";
+
+  const starDoor = document.createElement("div");
+  starDoor.className = "day star";
+  setDoorLabel(starDoor, positionIndex);
+  if (openedPositions[positionIndex]) {
+    starDoor.classList.add("opened");
+  }
+  starDoor.onclick = () => openDoor(positionIndex);
+
+  starRow.appendChild(starDoor);
+  calendarEl.appendChild(starRow);
+  doorElements[positionIndex] = starDoor;
+  positionIndex++; // now at 1
+
+  // ----- TREE BODY ROWS -----
   bodyRowStructure.forEach(rowSize => {
     const row = document.createElement("div");
     row.className = "row";
@@ -270,11 +321,6 @@
       door.className = "day";
 
       setDoorLabel(door, positionIndex);
-
-      // Make the very first tile the star (24)
-      if (positionIndex === 0) {
-        door.classList.add("star");
-      }
 
       if (openedPositions[positionIndex]) {
         door.classList.add("opened");
@@ -291,7 +337,7 @@
     calendarEl.appendChild(row);
   });
 
-  // ----- BUILD TRUNK (2 tiles stacked) -----
+  // ----- TRUNK (2 tiles stacked under centre) -----
   for (let t = 0; t < trunkHeight; t++) {
     const door = document.createElement("div");
     door.className = "day";
