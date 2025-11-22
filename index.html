@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NOFX Days of Christmas</title>
+
 <style>
   body {
-    font-family: 'Comic Sans MS', Arial, sans-serif;
+    font-family: Arial, sans-serif;
     background: linear-gradient(to bottom, #ffefef, #fff5f0);
     margin: 0;
-    padding: 20px;
+    padding: 20px 10px 60px;
     display: flex;
     justify-content: center;
     overflow-x: hidden;
@@ -18,19 +19,21 @@
 
   .wrapper {
     text-align: center;
+    width: 100%;
+    max-width: 600px;
   }
 
-  h1 {
-    color: #d70000;
-    text-shadow: 2px 2px #fff;
-    font-size: 2.2em;
-    margin-bottom: 10px;
+  /* --- LOGO HEADING --- */
+  .heading-logo {
+    width: 260px;
+    max-width: 80%;
+    margin-bottom: 25px;
+    filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.35));
   }
 
   .tree-container {
     position: relative;
     display: inline-block;
-    padding-top: 40px; /* space for star row */
   }
 
   .calendar,
@@ -60,52 +63,60 @@
     align-items: center;
   }
 
+  /* Square doors */
   .day {
-    background: #2e8b57;           /* green for tree by default */
-    border-radius: 15px;
-    padding: 15px;
-    min-width: 55px;
+    width: 90px;
+    height: 90px;
+    background: #2e8b57;
+    border-radius: 12px;
     text-align: center;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.25);
     transition: transform 0.2s, background 0.2s;
     font-weight: bold;
-    font-size: 0.9em;
-    line-height: 1.2;
+    font-size: 1.1rem;
     color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
   .day:hover {
-    transform: scale(1.05);
+    transform: scale(1.06);
     background: #3fa86e;
   }
 
+  /* trunk colour */
   .trunk .day {
-    background: #8b5a2b;           /* brown trunk when unopened */
+    background: #8b5a2b;
   }
-
   .trunk .day:hover {
     background: #a66b34;
   }
 
+  /* Opened door with image only */
   .day.opened {
-    background: #a0ffa0;           /* light green when opened */
-    color: #000;
+    background: #000;
+    color: transparent;
   }
 
-  /* Star-shaped 24 tile */
+  .day img.cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* STAR DOOR */
   .day.star {
     background: #ffe8a0;
     border-radius: 0;
     border: 2px solid #ffcc00;
-    box-shadow: 0 4px 10px rgba(255, 204, 0, 0.5);
-    color: #8b4a00;
-    width: 70px;
-    height: 70px;
+    width: 90px;
+    height: 90px;
     padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     clip-path: polygon(
       50% 0%,
       61% 35%,
@@ -118,53 +129,21 @@
       2% 35%,
       39% 35%
     );
+    box-shadow: 0 4px 10px rgba(255, 204, 0, 0.5);
+    color: #8b4a00;
   }
 
   .day.star.opened {
+    clip-path: inherit;
     background: #ffe39a;
+    overflow: hidden;
   }
 
-  #albumModal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0,  0, 0.7);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 3;
-    padding: 20px;
-    box-sizing: border-box;
+  .day.star img.cover {
+    clip-path: inherit;
   }
 
-  #albumContent {
-    background: #fff0f0;
-    padding: 20px;
-    border-radius: 15px;
-    width: 100%;
-    max-width: 320px;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    border: 2px solid #d70000;
-  }
-
-  button {
-    margin-top: 15px;
-    padding: 10px 20px;
-    border: none;
-    background: #d70000;
-    color: #fff;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-
-  button:hover {
-    background: #ff1a1a;
-  }
-
+  /* Snowflakes */
   .snowflake {
     position: fixed;
     top: -10px;
@@ -182,232 +161,238 @@
     0%   { transform: translateY(0) rotate(0deg); }
     100% { transform: translateY(100vh) rotate(360deg); }
   }
+
+  /* Modal */
+  #albumModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  #albumContent {
+    background: #fff0f0;
+    padding: 20px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    border: 2px solid #d70000;
+  }
+
+  #albumCover {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 6px;
+    display: block;
+    margin: 10px auto 10px;
+  }
+
+  button {
+    margin-top: 12px;
+    padding: 10px 18px;
+    border: none;
+    background: #d70000;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  button:hover {
+    background: #ff1a1a;
+  }
 </style>
 </head>
 <body>
+
 <div class="wrapper">
-  <h1>NOFX Days of Christmas</h1>
+
+  <!-- Centered logo heading -->
+  <img src="assets/NOFX.png" class="heading-logo" alt="NOFX Logo">
 
   <div class="tree-container">
     <div class="calendar" id="calendar"></div>
     <div class="trunk" id="trunk"></div>
   </div>
+
 </div>
 
+<!-- Modal for big album cover -->
 <div id="albumModal">
   <div id="albumContent">
-    <h2 id="albumTitle"></h2>
+    <img id="albumCover" src="" alt="">
     <button onclick="closeModal()">Close</button>
   </div>
 </div>
 
 <script>
-  // 24 albums – one for each door
+  /* Album list (title stays but not shown in boxes) */
   const albums = [
-    "Liberal Animation",
-    "S&M Airlines",
-    "Ribbed",
-    "White Trash, Two Heebs and a Bean",
-    "Punk in Drublic",
-    "Heavy Petting Zoo",
-    "So Long and Thanks for All the Shoes",
-    "Pump Up the Valuum",
-    "The War on Errorism",
-    "Wolves in Wolves’ Clothing",
-    "Coaster",
-    "Self Entitled",
-    "First Ditch Effort",
-    "Single Album",
-    "Double Album",
-    "Half Album",
-    "Maximum RocknRoll",
-    "45 or 46 Songs That Weren’t Good Enough to Go on Our Other Records",
-    "The Longest EP",
-    "Backstage Passport Soundtrack",
-    "I Heard They Suck Live!!",
-    "They’ve Actually Gotten Worse Live!",
-    "The Splits",
-    "The Decline"
+    { title: "Liberal Animation", cover: "assets/liberal-animation.jpg" },
+    { title: "S&M Airlines", cover: "assets/s-and-m-airlines.jpg" },
+    { title: "Ribbed", cover: "assets/ribbed.jpg" },
+    { title: "White Trash, Two Heebs and a Bean", cover: "assets/white-trash-two-heebs-and-a-bean.jpg" },
+    { title: "Punk in Drublic", cover: "assets/punk-in-drublic.jpg" },
+    { title: "Heavy Petting Zoo", cover: "assets/heavy-petting-zoo.jpg" },
+    { title: "So Long and Thanks for All the Shoes", cover: "assets/so-long-and-thanks-for-all-the-shoes.jpg" },
+    { title: "Pump Up the Valuum", cover: "assets/pump-up-the-valuum.jpg" },
+    { title: "The War on Errorism", cover: "assets/the-war-on-errorism.jpg" },
+    { title: "Wolves in Wolves’ Clothing", cover: "assets/wolves-in-wolves-clothing.jpg" },
+    { title: "Coaster", cover: "assets/coaster.jpg" },
+    { title: "Self Entitled", cover: "assets/self-entitled.jpg" },
+    { title: "First Ditch Effort", cover: "assets/first-ditch-effort.jpg" },
+    { title: "Single Album", cover: "assets/single-album.jpg" },
+    { title: "Double Album", cover: "assets/double-album.jpg" },
+    { title: "Half Album", cover: "assets/half-album.jpg" },
+    { title: "Maximum RocknRoll", cover: "assets/maximum-rocknroll.jpg" },
+    { title: "45 or 46 Songs...", cover: "assets/45-or-46-songs.jpg" },
+    { title: "The Longest EP", cover: "assets/the-longest-ep.jpg" },
+    { title: "Backstage Passport Soundtrack", cover: "assets/backstage-passport.jpg" },
+    { title: "I Heard They Suck Live!!", cover: "assets/i-heard-they-suck-live.jpg" },
+    { title: "They’ve Actually Gotten Worse Live!", cover: "assets/theyve-actually-gotten-worse-live.jpg" },
+    { title: "The Splits", cover: "assets/the-splits.jpg" },
+    { title: "The Decline", cover: "assets/the-decline.jpg" }
   ];
 
-  // Layout:
-  // star row: 1 tile (24)
-  // tree body rows: 1,2,3,4,5,6 = 21 tiles
-  // trunk: 2 tiles stacked
   const STAR_ROWS = 1;
   const bodyRowStructure = [1, 2, 3, 4, 5, 6];
   const trunkHeight = 2;
-
   const POSITIONS_COUNT =
-    STAR_ROWS + bodyRowStructure.reduce((a, b) => a + b, 0) + trunkHeight; // 24
+    STAR_ROWS + bodyRowStructure.reduce((a,b)=>a+b,0) + trunkHeight;
 
-  const STORAGE_PREFIX = "nofx_tree_star_v5_";
+  const STORAGE_PREFIX = "nofx_tree_v7_";
   const KEY_ALBUMS = STORAGE_PREFIX + "albums";
-  const KEY_DOOR_NUMBERS = STORAGE_PREFIX + "door_numbers";
-  const KEY_OPENED = STORAGE_PREFIX + "opened_positions";
+  const KEY_DOOR_NUMBERS = STORAGE_PREFIX + "doors";
+  const KEY_OPENED = STORAGE_PREFIX + "opened";
 
-  function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+  function shuffle(array){
+    for(let i=array.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [array[i],array[j]]=[array[j],array[i]];
     }
     return array;
   }
 
-  function loadJSON(key, fallback) {
-    try {
-      const raw = localStorage.getItem(key);
-      if (!raw) return fallback;
-      return JSON.parse(raw);
-    } catch {
-      return fallback;
-    }
+  function load(key,f){ try{const x=localStorage.getItem(key);return x?JSON.parse(x):f;}catch{return f;} }
+  function save(key,v){ localStorage.setItem(key,JSON.stringify(v)); }
+
+  let shuffledAlbums = load(KEY_ALBUMS,null);
+  if(!shuffledAlbums){
+    shuffledAlbums = shuffle([...albums]);
+    save(KEY_ALBUMS,shuffledAlbums);
   }
 
-  function saveJSON(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+  let doorNumbers = load(KEY_DOOR_NUMBERS,null);
+  if(!doorNumbers || doorNumbers[0] !== 24){
+    const nums = shuffle(Array.from({length:23},(_,i)=>i+1));
+    doorNumbers = [24, ...nums];
+    save(KEY_DOOR_NUMBERS,doorNumbers);
   }
 
-  // ----- PER-VISITOR STATE -----
-
-  // 1) Shuffled albums per position (0..23)
-  let shuffledAlbums = loadJSON(KEY_ALBUMS, null);
-  if (!shuffledAlbums || shuffledAlbums.length !== albums.length) {
-    shuffledAlbums = shuffleArray([...albums]);
-    saveJSON(KEY_ALBUMS, shuffledAlbums);
-  }
-
-  // 2) Door numbers per position (0..23)
-  //    position 0 (very top) is ALWAYS number 24 (star)
-  //    positions 1..23 are a random permutation of 1..23
-  let doorNumbers = loadJSON(KEY_DOOR_NUMBERS, null);
-  if (!doorNumbers || doorNumbers.length !== POSITIONS_COUNT || doorNumbers[0] !== 24) {
-    const rest = shuffleArray(Array.from({ length: 23 }, (_, i) => i + 1)); // 1..23
-    doorNumbers = [24, ...rest];
-    saveJSON(KEY_DOOR_NUMBERS, doorNumbers);
-  }
-
-  // 3) Opened positions (by index 0..23)
-  let openedPositions = loadJSON(KEY_OPENED, {});
+  let opened = load(KEY_OPENED,{});
 
   const calendarEl = document.getElementById("calendar");
   const trunkEl = document.getElementById("trunk");
-  const doorElements = []; // index -> DOM element
+  const doorEls = [];
 
-  // Optional: date-based locking (off for now)
-  const today = 24; // or new Date().getDate() in December
+  function setDoorContent(el,i){
+    const n = doorNumbers[i];
+    const album = shuffledAlbums[i];
 
-  // Helper: set label for a door
-  function setDoorLabel(el, positionIndex) {
-    const number = doorNumbers[positionIndex];
-    const albumName = shuffledAlbums[positionIndex];
-
-    if (openedPositions[positionIndex]) {
-      el.innerHTML = number + "<br>" + albumName;
+    if(opened[i]){
+      el.classList.add("opened");
+      el.innerHTML = `<img class="cover" src="${album.cover}">`;
     } else {
-      el.textContent = number;
+      el.classList.remove("opened");
+      el.textContent = n;
     }
   }
 
-  let positionIndex = 0;
+  let index = 0;
 
-  // ----- STAR ROW (position 0, number 24) -----
+  /* STAR */
   const starRow = document.createElement("div");
   starRow.className = "row";
 
-  const starDoor = document.createElement("div");
-  starDoor.className = "day star";
-  setDoorLabel(starDoor, positionIndex);
-  if (openedPositions[positionIndex]) {
-    starDoor.classList.add("opened");
-  }
-  starDoor.onclick = () => openDoor(positionIndex);
+  const star = document.createElement("div");
+  star.className = "day star";
+  setDoorContent(star,index);
+  star.onclick = ()=>openDoor(index);
 
-  starRow.appendChild(starDoor);
+  starRow.appendChild(star);
   calendarEl.appendChild(starRow);
-  doorElements[positionIndex] = starDoor;
-  positionIndex++; // now at 1
+  doorEls[index] = star;
+  index++;
 
-  // ----- TREE BODY ROWS -----
-  bodyRowStructure.forEach(rowSize => {
-    const row = document.createElement("div");
-    row.className = "row";
-
-    for (let i = 0; i < rowSize; i++) {
-      const door = document.createElement("div");
-      door.className = "day";
-
-      setDoorLabel(door, positionIndex);
-
-      if (openedPositions[positionIndex]) {
-        door.classList.add("opened");
-      }
-
-      const idx = positionIndex;
-      door.onclick = () => openDoor(idx);
-
-      row.appendChild(door);
-      doorElements[idx] = door;
-      positionIndex++;
+  /* TREE BODY */
+  bodyRowStructure.forEach(size=>{
+    const row=document.createElement("div");
+    row.className="row";
+    for(let i=0;i<size;i++){
+      const d=document.createElement("div");
+      d.className="day";
+      setDoorContent(d,index);
+      d.onclick=(()=>{let ii=index;return()=>openDoor(ii);})();
+      row.appendChild(d);
+      doorEls[index]=d;
+      index++;
     }
-
     calendarEl.appendChild(row);
   });
 
-  // ----- TRUNK (2 tiles stacked under centre) -----
-  for (let t = 0; t < trunkHeight; t++) {
-    const door = document.createElement("div");
-    door.className = "day";
-
-    setDoorLabel(door, positionIndex);
-
-    if (openedPositions[positionIndex]) {
-      door.classList.add("opened");
-    }
-
-    const idx = positionIndex;
-    door.onclick = () => openDoor(idx);
-
-    trunkEl.appendChild(door);
-    doorElements[idx] = door;
-    positionIndex++;
+  /* TRUNK */
+  for(let t=0;t<trunkHeight;t++){
+    const d=document.createElement("div");
+    d.className="day";
+    setDoorContent(d,index);
+    d.onclick=(()=>{let ii=index;return()=>openDoor(ii);})();
+    trunkEl.appendChild(d);
+    doorEls[index]=d;
+    index++;
   }
 
-  // ----- DOOR LOGIC -----
-  function openDoor(positionIndex) {
-    const album = shuffledAlbums[positionIndex];
-    document.getElementById("albumTitle").innerText = album;
-    document.getElementById("albumModal").style.display = "flex";
+  function openDoor(i){
+    opened[i]=true;
+    save(KEY_OPENED,opened);
 
-    openedPositions[positionIndex] = true;
-    saveJSON(KEY_OPENED, openedPositions);
+    const album = shuffledAlbums[i];
+    document.getElementById("albumCover").src = album.cover;
 
-    const door = doorElements[positionIndex];
-    if (door) {
-      door.classList.add("opened");
-      setDoorLabel(door, positionIndex);
-    }
+    document.getElementById("albumModal").style.display="flex";
+
+    setDoorContent(doorEls[i],i);
   }
 
-  function closeModal() {
-    document.getElementById("albumModal").style.display = "none";
+  function closeModal(){
+    document.getElementById("albumModal").style.display="none";
   }
   window.closeModal = closeModal;
 
-  // ----- SNOW EFFECT -----
-  function createSnowflake() {
-    const snowflake = document.createElement("div");
-    snowflake.className = "snowflake";
-    snowflake.style.left = Math.random() * window.innerWidth + "px";
-    snowflake.style.fontSize = Math.random() * 20 + 10 + "px";
-    snowflake.style.animationDuration = Math.random() * 5 + 5 + "s";
-    snowflake.style.opacity = Math.random();
-    snowflake.textContent = "❄";
-    document.body.appendChild(snowflake);
-    setTimeout(() => snowflake.remove(), 10000);
+  /* Snow */
+  function snow(){
+    const s=document.createElement("div");
+    s.className="snowflake";
+    s.style.left=Math.random()*window.innerWidth+"px";
+    s.style.fontSize=Math.random()*18+12+"px";
+    s.style.animationDuration=Math.random()*5+5+"s";
+    s.style.opacity=Math.random();
+    s.textContent="❄";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),10000);
   }
+  setInterval(snow,200);
 
-  setInterval(createSnowflake, 200);
 </script>
+
 </body>
 </html>
