@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NOFX Days of Christmas</title>
 
+<!-- FAVICON (paths match Assets/favicon_io folder) -->
+<link rel="apple-touch-icon" sizes="180x180" href="Assets/favicon_io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="Assets/favicon_io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="Assets/favicon_io/favicon-16x16.png">
+<link rel="icon" href="Assets/favicon_io/favicon.ico">
+<link rel="manifest" href="Assets/favicon_io/site.webmanifest">
+
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -39,7 +46,7 @@
   .calendar,
   .trunk {
     position: relative;
-    z-index: 1;
+    z-index: 2; /* above snowflakes */
   }
 
   .calendar {
@@ -65,6 +72,7 @@
 
   /* Square doors */
   .day {
+    position: relative;           /* needed for number overlay */
     width: 90px;
     height: 90px;
     background: #2e8b57;
@@ -97,7 +105,7 @@
     background: #a66b34;
   }
 
-  /* Opened door with image only */
+  /* Opened door with image + overlay number */
   .day.opened {
     background: #000;
     color: transparent;
@@ -108,6 +116,26 @@
     height: 100%;
     object-fit: cover;
     display: block;
+  }
+
+  /* Number overlay (used closed & opened) */
+  .door-number {
+    position: relative;
+    z-index: 1;
+  }
+
+  .day.opened .door-number {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+    border-radius: 999px;
+    padding: 6px 11px;
+    border: 1px solid #000;
+    font-size: 1rem;
+    font-weight: bold;
   }
 
   /* STAR DOOR */
@@ -144,7 +172,7 @@
     clip-path: inherit;
   }
 
-  /* Snowflakes */
+  /* Snowflakes – now BEHIND the tree (z-index: 0) */
   .snowflake {
     position: fixed;
     top: -10px;
@@ -152,7 +180,7 @@
     font-size: 1em;
     user-select: none;
     pointer-events: none;
-    z-index: 1;
+    z-index: 0;
     animation-name: fall;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
@@ -224,15 +252,13 @@
 <body>
 
 <div class="wrapper">
-
-  <!-- Centered logo heading (note: Assets with capital A, .jpg) -->
+  <!-- Centered logo heading -->
   <img src="Assets/NOFX.jpg" class="heading-logo" alt="NOFX Logo">
 
   <div class="tree-container">
     <div class="calendar" id="calendar"></div>
     <div class="trunk" id="trunk"></div>
   </div>
-
 </div>
 
 <!-- Modal for big album cover + title -->
@@ -279,7 +305,7 @@
   const POSITIONS_COUNT =
     STAR_ROWS + bodyRowStructure.reduce((a,b)=>a+b,0) + trunkHeight;
 
-  const STORAGE_PREFIX = "nofx_tree_v8_";
+  const STORAGE_PREFIX = "nofx_tree_v9_";
   const KEY_ALBUMS = STORAGE_PREFIX + "albums";
   const KEY_DOOR_NUMBERS = STORAGE_PREFIX + "doors";
   const KEY_OPENED = STORAGE_PREFIX + "opened";
@@ -296,13 +322,13 @@
   function save(key,v){ localStorage.setItem(key,JSON.stringify(v)); }
 
   let shuffledAlbums = load(KEY_ALBUMS,null);
-  if(!shuffledAlbums){
+  if(!shuffledAlbums || shuffledAlbums.length !== albums.length){
     shuffledAlbums = shuffle([...albums]);
     save(KEY_ALBUMS,shuffledAlbums);
   }
 
   let doorNumbers = load(KEY_DOOR_NUMBERS,null);
-  if(!doorNumbers || doorNumbers[0] !== 24){
+  if(!doorNumbers || doorNumbers.length !== POSITIONS_COUNT || doorNumbers[0] !== 24){
     const nums = shuffle(Array.from({length:23},(_,i)=>i+1));
     doorNumbers = [24, ...nums];
     save(KEY_DOOR_NUMBERS,doorNumbers);
@@ -320,10 +346,13 @@
 
     if(opened[i]){
       el.classList.add("opened");
-      el.innerHTML = `<img class="cover" src="${album.cover}" alt="${album.title} cover">`;
+      el.innerHTML = `
+        <img class="cover" src="${album.cover}" alt="${album.title} cover">
+        <span class="door-number">${n}</span>
+      `;
     } else {
       el.classList.remove("opened");
-      el.textContent = n;
+      el.innerHTML = `<span class="door-number">${n}</span>`;
     }
   }
 
