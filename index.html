@@ -30,10 +30,10 @@
     max-width: 600px;
   }
 
-  /* --- LOGO HEADING --- */
+  /* --- LOGO HEADING (33% smaller) --- */
   .heading-logo {
-    width: 260px;
-    max-width: 80%;
+    width: 175px;          /* was 260px */
+    max-width: 60%;
     margin-bottom: 25px;
     filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.35));
   }
@@ -72,7 +72,7 @@
 
   /* Square doors */
   .day {
-    position: relative;           /* needed for number overlay */
+    position: relative;           /* for number overlay */
     width: 90px;
     height: 90px;
     background: #2e8b57;
@@ -89,6 +89,7 @@
     justify-content: center;
     box-sizing: border-box;
     overflow: hidden;
+    pointer-events: auto;
   }
 
   .day:hover {
@@ -105,7 +106,7 @@
     background: #a66b34;
   }
 
-  /* Opened door with image + overlay number */
+  /* Opened door with image only + overlay number */
   .day.opened {
     background: #000;
     color: transparent;
@@ -172,7 +173,7 @@
     clip-path: inherit;
   }
 
-  /* Snowflakes – now BEHIND the tree (z-index: 0) */
+  /* Snowflakes – behind the tree */
   .snowflake {
     position: fixed;
     top: -10px;
@@ -305,7 +306,8 @@
   const POSITIONS_COUNT =
     STAR_ROWS + bodyRowStructure.reduce((a,b)=>a+b,0) + trunkHeight;
 
-  const STORAGE_PREFIX = "nofx_tree_v9_";
+  // bump key version so old stored state can't interfere
+  const STORAGE_PREFIX = "nofx_tree_v10_";
   const KEY_ALBUMS = STORAGE_PREFIX + "albums";
   const KEY_DOOR_NUMBERS = STORAGE_PREFIX + "doors";
   const KEY_OPENED = STORAGE_PREFIX + "opened";
@@ -358,15 +360,13 @@
 
   let index = 0;
 
-  /* STAR */
+  /* STAR row (index 0 always) */
   const starRow = document.createElement("div");
   starRow.className = "row";
 
   const star = document.createElement("div");
   star.className = "day star";
   setDoorContent(star,index);
-  star.onclick = ()=>openDoor(index);
-
   starRow.appendChild(star);
   calendarEl.appendChild(starRow);
   doorEls[index] = star;
@@ -380,7 +380,6 @@
       const d=document.createElement("div");
       d.className="day";
       setDoorContent(d,index);
-      d.onclick=(()=>{let ii=index;return()=>openDoor(ii);})();
       row.appendChild(d);
       doorEls[index]=d;
       index++;
@@ -393,11 +392,15 @@
     const d=document.createElement("div");
     d.className="day";
     setDoorContent(d,index);
-    d.onclick=(()=>{let ii=index;return()=>openDoor(ii);})();
     trunkEl.appendChild(d);
     doorEls[index]=d;
     index++;
   }
+
+  // Attach click listener to EVERY door (including star)
+  doorEls.forEach((el, i) => {
+    el.addEventListener("click", () => openDoor(i));
+  });
 
   function openDoor(i){
     opened[i]=true;
