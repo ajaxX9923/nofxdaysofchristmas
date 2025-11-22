@@ -27,32 +27,16 @@
     margin-bottom: 10px;
   }
 
-  /* Tree container with green triangle background */
   .tree-container {
     position: relative;
     display: inline-block;
-    padding-top: 40px;  /* space for the star to “float” above tree */
-  }
-
-  .tree-container::before {
-    content: "";
-    position: absolute;
-    top: 55px;            /* start of the green tree (under the star row) */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 180px solid transparent;
-    border-right: 180px solid transparent;
-    border-bottom: 280px solid #0b5d2a; /* green tree */
-    opacity: 0.85;
-    z-index: 0;
+    padding-top: 40px; /* space for star row */
   }
 
   .calendar,
   .trunk {
     position: relative;
-    z-index: 1; /* on top of tree background */
+    z-index: 1;
   }
 
   .calendar {
@@ -77,7 +61,7 @@
   }
 
   .day {
-    background: #ffdddd;
+    background: #2e8b57;           /* green for tree by default */
     border-radius: 15px;
     padding: 15px;
     min-width: 55px;
@@ -88,21 +72,56 @@
     font-weight: bold;
     font-size: 0.9em;
     line-height: 1.2;
+    color: #fff;
   }
 
   .day:hover {
     transform: scale(1.05);
-    background: #ffe0e0;
+    background: #3fa86e;
+  }
+
+  .trunk .day {
+    background: #8b5a2b;           /* brown trunk when unopened */
+  }
+
+  .trunk .day:hover {
+    background: #a66b34;
   }
 
   .day.opened {
-    background: #a0ffa0;
+    background: #a0ffa0;           /* light green when opened */
+    color: #000;
   }
 
+  /* Star-shaped 24 tile */
   .day.star {
     background: #ffe8a0;
+    border-radius: 0;
     border: 2px solid #ffcc00;
     box-shadow: 0 4px 10px rgba(255, 204, 0, 0.5);
+    color: #8b4a00;
+    width: 70px;
+    height: 70px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    clip-path: polygon(
+      50% 0%,
+      61% 35%,
+      98% 35%,
+      68% 57%,
+      79% 91%,
+      50% 70%,
+      21% 91%,
+      32% 57%,
+      2% 35%,
+      39% 35%
+    );
+  }
+
+  .day.star.opened {
+    background: #ffe39a;
   }
 
   #albumModal {
@@ -222,7 +241,7 @@
   const POSITIONS_COUNT =
     STAR_ROWS + bodyRowStructure.reduce((a, b) => a + b, 0) + trunkHeight; // 24
 
-  const STORAGE_PREFIX = "nofx_tree_star_v4_";
+  const STORAGE_PREFIX = "nofx_tree_star_v5_";
   const KEY_ALBUMS = STORAGE_PREFIX + "albums";
   const KEY_DOOR_NUMBERS = STORAGE_PREFIX + "door_numbers";
   const KEY_OPENED = STORAGE_PREFIX + "opened_positions";
@@ -278,9 +297,7 @@
   // Optional: date-based locking (off for now)
   const today = 24; // or new Date().getDate() in December
 
-  // Helper to set the door label:
-  // closed -> just the number
-  // opened -> number (line 1), album (line 2)
+  // Helper: set label for a door
   function setDoorLabel(el, positionIndex) {
     const number = doorNumbers[positionIndex];
     const albumName = shuffledAlbums[positionIndex];
