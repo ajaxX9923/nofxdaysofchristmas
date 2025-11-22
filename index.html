@@ -92,6 +92,7 @@
   .trunk .day {
     background: #8b5a2b;
   }
+
   .trunk .day:hover {
     background: #a66b34;
   }
@@ -197,6 +198,13 @@
     margin: 10px auto 10px;
   }
 
+  #albumTitle {
+    margin: 5px 0 0;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #d70000;
+  }
+
   button {
     margin-top: 12px;
     padding: 10px 18px;
@@ -227,16 +235,17 @@
 
 </div>
 
-<!-- Modal for big album cover -->
+<!-- Modal for big album cover + title -->
 <div id="albumModal">
   <div id="albumContent">
     <img id="albumCover" src="" alt="">
+    <h2 id="albumTitle"></h2>
     <button onclick="closeModal()">Close</button>
   </div>
 </div>
 
 <script>
-  /* Album list (title stays but not shown in boxes) */
+  /* Album list (title used only in modal) */
   const albums = [
     { title: "Liberal Animation", cover: "assets/liberal-animation.jpg" },
     { title: "S&M Airlines", cover: "assets/s-and-m-airlines.jpg" },
@@ -255,7 +264,7 @@
     { title: "Double Album", cover: "assets/double-album.jpg" },
     { title: "Half Album", cover: "assets/half-album.jpg" },
     { title: "Maximum RocknRoll", cover: "assets/maximum-rocknroll.jpg" },
-    { title: "45 or 46 Songs...", cover: "assets/45-or-46-songs.jpg" },
+    { title: "45 or 46 Songs That Weren’t Good Enough to Go on Our Other Records", cover: "assets/45-or-46-songs.jpg" },
     { title: "The Longest EP", cover: "assets/the-longest-ep.jpg" },
     { title: "Backstage Passport Soundtrack", cover: "assets/backstage-passport.jpg" },
     { title: "I Heard They Suck Live!!", cover: "assets/i-heard-they-suck-live.jpg" },
@@ -270,7 +279,7 @@
   const POSITIONS_COUNT =
     STAR_ROWS + bodyRowStructure.reduce((a,b)=>a+b,0) + trunkHeight;
 
-  const STORAGE_PREFIX = "nofx_tree_v7_";
+  const STORAGE_PREFIX = "nofx_tree_v8_";
   const KEY_ALBUMS = STORAGE_PREFIX + "albums";
   const KEY_DOOR_NUMBERS = STORAGE_PREFIX + "doors";
   const KEY_OPENED = STORAGE_PREFIX + "opened";
@@ -311,7 +320,7 @@
 
     if(opened[i]){
       el.classList.add("opened");
-      el.innerHTML = `<img class="cover" src="${album.cover}">`;
+      el.innerHTML = `<img class="cover" src="${album.cover}" alt="${album.title} cover">`;
     } else {
       el.classList.remove("opened");
       el.textContent = n;
@@ -367,6 +376,7 @@
 
     const album = shuffledAlbums[i];
     document.getElementById("albumCover").src = album.cover;
+    document.getElementById("albumTitle").innerText = album.title;
 
     document.getElementById("albumModal").style.display="flex";
 
