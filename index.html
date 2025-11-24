@@ -96,6 +96,10 @@ body {
   background: #8b5a2b;
 }
 
+.trunk .day:hover {
+  background: #a66b34;
+}
+
 .day.opened {
   background: #000;
   color: transparent;
@@ -152,7 +156,7 @@ body {
   top:0; left:0;
   width:100%; height:100%;
   background: rgba(0,0,0,0.7);
-  display:none;
+  display: none;
   justify-content:center;
   align-items:center;
   padding:20px;
@@ -192,65 +196,191 @@ body {
 }
 </style>
 </head>
-
 <body>
 
 <div class="wrapper">
-  <img class="heading-logo" src="Assets/NOFX.jpg">
-  <div class="calendar" id="calendar"></div>
-  <div class="trunk" id="trunk"></div>
+  <img class="heading-logo" src="Assets/NOFX.jpg" alt="NOFX Logo">
+
+  <div class="tree-container">
+    <div class="calendar" id="calendar"></div>
+    <div class="trunk" id="trunk"></div>
+  </div>
 </div>
 
-
-<!-- POPUP -->
 <div id="albumModal">
- <div id="albumContent">
-   <img id="albumCover">
-   <h3 id="albumTitle"></h3>
-
-   <button id="spotifyBtn" class="spotify-btn">
-     <img src="Assets/spotify-icon.png">
-     Listen
-   </button>
-
-   <button onclick="closeModal()">Close</button>
- </div>
+  <div id="albumContent">
+    <img id="albumCover" alt="Album cover">
+    <h3 id="albumTitle"></h3>
+    <button id="spotifyBtn" class="spotify-btn">
+      <img src="Assets/spotify-icon.png" alt="Spotify logo">
+      Listen
+    </button>
+    <button onclick="closeModal()">Close</button>
+  </div>
 </div>
-
 <script>
-
-const spotify = [
-"https://open.spotify.com/album/2GCHIqzroqpjQwszmUdk5F",
-"https://open.spotify.com/album/4vM1w3hbxQHcNghS0wg1dF",
-"https://open.spotify.com/album/6xyLnMyql9hJdI65dyJNif",
-"https://open.spotify.com/album/5dbWoqjHDExyrEJD9ftnay",
-"https://open.spotify.com/album/6Z8BYH27wINoUk4QMUx7gh",
-"https://open.spotify.com/album/5SoeTpVu2MFq5RlCsdRBf2",
-"https://spoti.fi/3vujUtd",
-"https://open.spotify.com/album/37hvw6OVfRLktCmFcU9zHE",
-"https://open.spotify.com/album/0D6YPfv9u2JHdp1kiieR25",
-"https://open.spotify.com/album/0bb9iLMHdUJhFIVwOars3P",
-"https://open.spotify.com/album/5l2QTQ0OoyQw9luosyCe9X",
-"https://open.spotify.com/album/3yLkOvGA3vHtwEyqMcnp18",
-"https://open.spotify.com/album/2WJFIzmyJ6Egq00seat7hy",
-"https://open.spotify.com/album/7clMEugC4qJ1ApbscpXsaL",
-"https://open.spotify.com/album/4mJ4PBk5yHl3xuyHkly85n",
-"https://open.spotify.com/album/6TabKLBAyynahNuuxaKGOD",
-"https://open.spotify.com/album/5iGh6l7JnaIfw7x1Tz4mnj",
-"https://open.spotify.com/album/4uVWzS36kkWNFOXUjSym8g",
-"https://open.spotify.com/album/2PxPjYo7QT9Utmz0seSLjW",
-"https://open.spotify.com/album/0eQbe8kRqqeQ9c1ePfd2QW",
-"https://open.spotify.com/album/1mV82C6196W7GvOS8yoAeM",
-"https://open.spotify.com/album/49Xhg2MpQBNbMqr1FGdFdX",
-"https://open.spotify.com/album/1V0jqCyz5StIhGp16Ggdz7",
-"https://open.spotify.com/album/0LW2FwC8ay4hXNDzaw7jWY"
+const albums = [
+  { title: "Liberal Animation", cover: "Assets/liberal-animation.jpg", link: "https://open.spotify.com/album/2GCHIqzroqpjQwszmUdk5F" },
+  { title: "S&M Airlines", cover: "Assets/s-and-m-airlines.jpg", link: "https://open.spotify.com/album/4vM1w3hbxQHcNghS0wg1dF" },
+  { title: "Ribbed", cover: "Assets/ribbed.jpg", link: "https://open.spotify.com/album/6xyLnMyql9hJdI65dyJNif" },
+  { title: "White Trash, Two Heebs and a Bean", cover: "Assets/white-trash-two-heebs-and-a-bean.jpg", link: "https://open.spotify.com/album/5dbWoqjHDExyrEJD9ftnay" },
+  { title: "Punk in Drublic", cover: "Assets/punk-in-drublic.jpg", link: "https://open.spotify.com/album/6Z8BYH27wINoUk4QMUx7gh" },
+  { title: "Heavy Petting Zoo", cover: "Assets/heavy-petting-zoo.jpg", link: "https://open.spotify.com/album/5SoeTpVu2MFq5RlCsdRBf2" },
+  { title: "So Long and Thanks for All the Shoes", cover: "Assets/so-long-and-thanks-for-all-the-shoes.jpg", link: "https://open.spotify.com/album/37hvw6OVfRLktCmFcU9zHE" },
+  { title: "Pump Up the Valuum", cover: "Assets/pump-up-the-valuum.jpg", link: "https://open.spotify.com/album/0D6YPfv9u2JHdp1kiieR25" },
+  { title: "The War on Errorism", cover: "Assets/the-war-on-errorism.jpg", link: "https://open.spotify.com/album/0LW2FwC8ay4hXNDzaw7jWY" },
+  { title: "Wolves in Wolves’ Clothing", cover: "Assets/wolves-in-wolves-clothing.jpg", link: "https://open.spotify.com/album/0bb9iLMHdUJhFIVwOars3P" },
+  { title: "Coaster", cover: "Assets/coaster.jpg", link: "https://open.spotify.com/album/5l2QTQ0OoyQw9luosyCe9X" },
+  { title: "Self Entitled", cover: "Assets/self-entitled.jpg", link: "https://open.spotify.com/album/3yLkOvGA3vHtwEyqMcnp18" },
+  { title: "First Ditch Effort", cover: "Assets/first-ditch-effort.jpg", link: "https://open.spotify.com/album/2WJFIzmyJ6Egq00seat7hy" },
+  { title: "Single Album", cover: "Assets/single-album.jpg", link: "https://open.spotify.com/album/7clMEugC4qJ1ApbscpXsaL" },
+  { title: "Double Album", cover: "Assets/double-album.jpg", link: "https://open.spotify.com/album/4mJ4PBk5yHl3xuyHkly85n" },
+  { title: "Half Album", cover: "Assets/half-album.jpg", link: "https://open.spotify.com/album/6TabKLBAyynahNuuxaKGOD" },
+  { title: "Maximum RocknRoll", cover: "Assets/maximum-rocknroll.jpg", link: "https://open.spotify.com/album/5iGh6l7JnaIfw7x1Tz4mnj" },
+  { title: "45 or 46 Songs That Weren’t Good Enough to Go on Our Other Records", cover: "Assets/45-or-46-songs.jpg", link: "https://open.spotify.com/album/4uVWzS36kkWNFOXUjSym8g" },
+  { title: "The Longest EP", cover: "Assets/the-longest-ep.jpg", link: "https://open.spotify.com/album/2PxPjYo7QT9Utmz0seSLjW" },
+  { title: "Backstage Passport Soundtrack", cover: "Assets/backstage-passport.jpg", link: "https://open.spotify.com/album/0eQbe8kRqqeQ9c1ePfd2QW" },
+  { title: "I Heard They Suck Live!!", cover: "Assets/i-heard-they-suck-live.jpg", link: "https://open.spotify.com/album/1mV82C6196W7GvOS8yoAeM" },
+  { title: "They’ve Actually Gotten Worse Live!", cover: "Assets/theyve-actually-gotten-worse-live.jpg", link: "https://open.spotify.com/album/49Xhg2MpQBNbMqr1FGdFdX" },
+  { title: "The Splits", cover: "Assets/the-splits.jpg", link: "https://open.spotify.com/album/1V0jqCyz5StIhGp16Ggdz7" },
+  { title: "The Decline", cover: "Assets/the-decline.jpg", link: "https://open.spotify.com/album/0LW2FwC8ay4hXNDzaw7jWY" }
 ];
 
-function closeModal(){
-  document.getElementById("albumModal").style.display="none";
+const STAR_ROWS = 1;
+const bodyRowStructure = [1,2,3,4,5,6];
+const trunkHeight = 2;
+const POSITIONS_COUNT = STAR_ROWS + bodyRowStructure.reduce((a,b)=>a+b,0) + trunkHeight;
+
+const STORAGE_PREFIX = "nofx_tree_v10_";
+const KEY_ALBUMS = STORAGE_PREFIX + "albums";
+const KEY_DOOR_NUMBERS = STORAGE_PREFIX + "doors";
+const KEY_OPENED = STORAGE_PREFIX + "opened";
+
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [array[i],array[j]]=[array[j],array[i]];
+  }
+  return array;
 }
 
-</script>
+function load(key,f){ try{const x=localStorage.getItem(key); return x? JSON.parse(x) : f;} catch{ return f;} }
+function save(key,v){ localStorage.setItem(key, JSON.stringify(v)); }
 
+let shuffledAlbums = load(KEY_ALBUMS, null);
+if(!shuffledAlbums || shuffledAlbums.length !== albums.length){
+  shuffledAlbums = shuffle([...albums]);
+  save(KEY_ALBUMS, shuffledAlbums);
+}
+
+let doorNumbers = load(KEY_DOOR_NUMBERS, null);
+if(!doorNumbers || doorNumbers.length !== POSITIONS_COUNT || doorNumbers[0] !== 24){
+  const nums = shuffle(Array.from({length:23}, (_, i)=>i+1));
+  doorNumbers = [24, ...nums];
+  save(KEY_DOOR_NUMBERS, doorNumbers);
+}
+
+let opened = load(KEY_OPENED, {});
+
+const calendarEl = document.getElementById("calendar");
+const trunkEl = document.getElementById("trunk");
+const doorEls = [];
+
+function setDoorContent(el,i){
+  const n = doorNumbers[i];
+  const album = shuffledAlbums[i];
+  if(opened[i]){
+    el.classList.add("opened");
+    el.innerHTML = `
+      <img class="cover" src="${album.cover}" alt="${album.title} cover">
+      <span class="door-number">${n}</span>
+    `;
+  } else {
+    el.classList.remove("opened");
+    el.innerHTML = `<span class="door-number">${n}</span>`;
+  }
+}
+
+let index = 0;
+
+/* STAR */
+const starRow = document.createElement("div");
+starRow.className = "row";
+
+const star = document.createElement("div");
+star.className = "day star";
+doorEls[index] = star;
+setDoorContent(star, index);
+starRow.appendChild(star);
+calendarEl.appendChild(starRow);
+index++;
+
+/* TREE BODY */
+bodyRowStructure.forEach(size=>{
+  const row = document.createElement("div");
+  row.className = "row";
+  for(let i=0; i<size; i++){
+    const d = document.createElement("div");
+    d.className = "day";
+    doorEls[index] = d;
+    setDoorContent(d, index);
+    row.appendChild(d);
+    index++;
+  }
+  calendarEl.appendChild(row);
+});
+
+/* TRUNK */
+for(let t=0; t<trunkHeight; t++){
+  const d = document.createElement("div");
+  d.className = "day";
+  doorEls[index] = d;
+  setDoorContent(d, index);
+  trunkEl.appendChild(d);
+  index++;
+}
+
+// Add click handler to every door
+doorEls.forEach((el, i) => {
+  el.addEventListener("click", () => openDoor(i));
+});
+
+function openDoor(i){
+  opened[i] = true;
+  save(KEY_OPENED, opened);
+
+  const album = shuffledAlbums[i];
+  document.getElementById("albumCover").src = album.cover;
+  document.getElementById("albumTitle").innerText = album.title;
+
+  document.getElementById("spotifyBtn").onclick = () => {
+    window.open(album.link, "_blank");
+  };
+
+  document.getElementById("albumModal").style.display = "flex";
+  setDoorContent(doorEls[i], i);
+}
+
+function closeModal(){
+  document.getElementById("albumModal").style.display = "none";
+}
+
+window.closeModal = closeModal;
+
+/* Snow effect */
+function snow(){
+  const s = document.createElement("div");
+  s.className = "snowflake";
+  s.style.left = Math.random()*window.innerWidth + "px";
+  s.style.fontSize = Math.random()*18 + 12 + "px";
+  s.style.animationDuration = Math.random()*5 + 5 + "s";
+  s.style.opacity = Math.random();
+  s.textContent = "❄";
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),10000);
+}
+setInterval(snow, 200);
+
+</script>
 </body>
-</html>
+</html> 
