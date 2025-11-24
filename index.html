@@ -1,390 +1,879 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOFX Days of Christmas</title>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>NOFX Days of Christmas</title>
 
-<link rel="apple-touch-icon" sizes="180x180" href="Assets/favicon_io/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="Assets/favicon_io/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="Assets/favicon_io/favicon-16x16.png">
-<link rel="icon" href="Assets/favicon_io/favicon.ico">
-<link rel="manifest" href="Assets/favicon_io/site.webmanifest">
+  <!-- Favicon (can stay even if not perfect yet) -->
+  <link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="Assets/favicon_io/apple-touch-icon.png"
+  />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="32x32"
+    href="Assets/favicon_io/favicon-32x32.png"
+  />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16x16"
+    href="Assets/favicon_io/favicon-16x16.png"
+  />
+  <link
+    rel="icon"
+    href="Assets/favicon_io/favicon.ico"
+  />
+  <link
+    rel="manifest"
+    href="Assets/favicon_io/site.webmanifest"
+  />
 
-<style>
-html, body {
-  overflow-x: hidden !important;
-}
-body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, #ffefef, #fff5f0);
-  margin: 0;
-  padding: 20px 10px 60px;
-  display: flex;
-  justify-content: center;
-  overflow-x: hidden;
-  position: relative;
-}
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden; /* stop sideways jiggle */
+    }
 
-.wrapper {
-  text-align: center;
-  width: 100%;
-  max-width: 600px;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #ffefef, #fff5f0);
+      padding: 20px 10px 60px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
 
-.heading-logo {
-  width: 175px;
-  max-width: 60%;
-  margin-bottom: 25px;
-  filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.35));
-}
+    .wrapper {
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+      position: relative;
+      z-index: 2; /* above snow */
+    }
 
-.tree-container {
-  position: relative;
-  display: inline-block;
-}
+    .heading-logo {
+      width: 175px;
+      max-width: 60%;
+      margin-bottom: 24px;
+      filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.35));
+    }
 
-.calendar,
-.trunk {
-  position: relative;
-  z-index: 2;
-}
+    .tree-container {
+      display: inline-block;
+    }
 
-.calendar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
+    .calendar,
+    .trunk {
+      position: relative;
+      z-index: 2;
+    }
 
-.row {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-}
+    .calendar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
 
-.trunk {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: center;
-}
+    .row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
 
-.day {
-  position: relative;
-  width: 90px;
-  height: 90px;
-  background: #2e8b57;
-  border-radius: 12px;
-  cursor: pointer;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
-  transition: transform 0.2s, background 0.2s;
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
+    .trunk {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
 
-.day:hover {
-  transform: scale(1.06);
-  background: #3fa86e;
-}
+    /* Gift-style doors */
+    .day {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      border-radius: 12px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
 
-.trunk .day {
-  background: #8b5a2b;
-}
+      /* gift-like depth */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.22);
+      background: #2e8b57;
+      background-image: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.12),
+        transparent 40%,
+        rgba(0, 0, 0, 0.25)
+      );
+      border: 1px solid rgba(0, 0, 0, 0.25);
 
-.trunk .day:hover {
-  background: #a66b34;
-}
+      transition: transform 0.2s ease, box-shadow 0.2s ease,
+        filter 0.2s ease;
+      overflow: hidden;
+    }
 
-.day.opened {
-  background: #000;
-  color: transparent;
-}
+    .day:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+      filter: brightness(1.05);
+    }
 
-.day img.cover {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+    /* trunk color (dark matte) */
+    .trunk .day {
+      background-color: #3d251a;
+      background-image: none;
+    }
 
-.door-number {
-  position: relative;
-  z-index: 1;
-}
+    .trunk .day:hover {
+      filter: brightness(1.08);
+    }
 
-.day.opened .door-number {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(255,255,255,0.95);
-  padding: 6px 11px;
-  border-radius: 999px;
-  border: 1px solid black;
-  color: #000;
-}
+    /* Opened gift door */
+    .day.opened {
+      color: transparent;
+      border: 2px solid #c8a34b; /* thin muted gold */
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
 
-.day.star {
-  background: #ffe8a0;
-  width:90px;
-  height:90px;
-  clip-path: polygon(
-    50% 0%,
-    61% 35%,
-    98% 35%,
-    68% 57%,
-    79% 91%,
-    50% 70%,
-    21% 91%,
-    32% 57%,
-    2% 35%,
-    39% 35%
-  );
-  border:2px solid gold;
-}
+    .day img.cover {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
-.day.star.opened img.cover {
-  clip-path: inherit;
-}
+    /* door number badge */
+    .door-number {
+      position: relative;
+      z-index: 1;
+    }
 
-#albumModal {
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: rgba(0,0,0,0.7);
-  display: none;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-  z-index:1000;
-}
+    .day.opened .door-number {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.96);
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid #000000;
+      color: #000000;
+      font-size: 1rem;
+      font-weight: bold;
+    }
 
-#albumContent {
-  background:#fff0f0;
-  border-radius:14px;
-  padding:18px;
-  max-width:300px;
-  text-align:center;
-  border:2px solid #d70000;
-}
+    /* star tile (24) */
+    .day.star {
+      background-color: #ffe8a0;
+      background-image: none;
+      border: 2px solid #ffcc00;
+      box-shadow: 0 5px 12px rgba(255, 204, 0, 0.5);
+      clip-path: polygon(
+        50% 0%,
+        61% 35%,
+        98% 35%,
+        68% 57%,
+        79% 91%,
+        50% 70%,
+        21% 91%,
+        32% 57%,
+        2% 35%,
+        39% 35%
+      );
+    }
 
-#albumCover {
-  width:200px;
-  border-radius:8px;
-}
+    .day.star.opened {
+      clip-path: inherit;
+      overflow: hidden;
+    }
 
-.spotify-btn {
-  background:#1db954;
-  color:white;
-  border:none;
-  padding:10px 15px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  border-radius:6px;
-  cursor:pointer;
-  font-weight:bold;
-  margin:10px auto;
-}
+    .day.star.opened img.cover {
+      clip-path: inherit;
+    }
 
-.spotify-btn img {
-  width:20px;
-}
-</style>
+    /* opening animation */
+    .day.opening {
+      animation: popOpen 0.25s ease-out;
+    }
+
+    @keyframes popOpen {
+      0% {
+        transform: scale(0.92);
+      }
+      70% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* locked shake animation (for future day) */
+    .day.locked-shake {
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes shake {
+      0% {
+        transform: translateX(0);
+      }
+      25% {
+        transform: translateX(-4px);
+      }
+      50% {
+        transform: translateX(4px);
+      }
+      75% {
+        transform: translateX(-4px);
+      }
+      100% {
+        transform: translateX(0);
+      }
+    }
+
+    /* Modal */
+    #albumModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+      z-index: 999;
+    }
+
+    #albumContent {
+      background: #fff0f0;
+      border-radius: 14px;
+      padding: 18px 16px 16px;
+      max-width: 320px;
+      width: 100%;
+      text-align: center;
+      border: 2px solid #d70000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    #albumCover {
+      max-width: 210px;
+      max-height: 210px;
+      border-radius: 8px;
+      display: block;
+      margin: 4px auto 10px;
+    }
+
+    #albumTitle {
+      margin: 4px 0 2px;
+      font-size: 1.05rem;
+      font-weight: bold;
+      color: #b00000;
+    }
+
+    #albumYear {
+      margin: 0 0 10px;
+      font-size: 0.9rem;
+      color: #444444;
+    }
+
+    .spotify-btn {
+      background: #ffffff;
+      color: #000000;
+      border: 1px solid #1db954;
+      padding: 6px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin: 6px auto 10px;
+    }
+
+    .spotify-btn img {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .spotify-btn:hover {
+      background: #f5fff8;
+      box-shadow: 0 0 6px rgba(29, 185, 84, 0.4);
+    }
+
+    .modal-close-btn {
+      margin-top: 4px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      background: #d70000;
+      color: #ffffff;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .modal-close-btn:hover {
+      background: #ff1a1a;
+    }
+
+    /* Surprise Gift button (25th) */
+    #surpriseGiftBtn {
+      margin-top: 20px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid #c8a34b;
+      background: #ffffff;
+      color: #5a0f1c;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: none; /* shown conditionally via JS */
+      gap: 6px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #surpriseGiftBtn span.icon {
+      font-size: 1.1rem;
+    }
+
+    #surpriseGiftBtn:hover {
+      background: #fff8ea;
+      box-shadow: 0 0 8px rgba(200, 163, 75, 0.5);
+    }
+
+    /* Snowflakes behind tree */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: #ffffff;
+      font-size: 1em;
+      user-select: none;
+      pointer-events: none;
+      z-index: 0;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="wrapper">
+    <img
+      class="heading-logo"
+      src="Assets/NOFX.jpg"
+      alt="NOFX Logo"
+    />
 
-<div class="wrapper">
-  <img class="heading-logo" src="Assets/NOFX.jpg" alt="NOFX Logo">
+    <div class="tree-container">
+      <div class="calendar" id="calendar"></div>
+      <div class="trunk" id="trunk"></div>
+    </div>
 
-  <div class="tree-container">
-    <div class="calendar" id="calendar"></div>
-    <div class="trunk" id="trunk"></div>
-  </div>
-</div>
-
-<div id="albumModal">
-  <div id="albumContent">
-    <img id="albumCover" alt="Album cover">
-    <h3 id="albumTitle"></h3>
-    <button id="spotifyBtn" class="spotify-btn">
-      <img src="Assets/spotify-icon.png" alt="Spotify logo">
-      Listen
+    <button id="surpriseGiftBtn">
+      <span class="icon">🎁</span>
+      <span>Surprise Gift</span>
     </button>
-    <button onclick="closeModal()">Close</button>
   </div>
-</div>
-<script>
-const albums = [
-  { title: "Liberal Animation", cover: "Assets/liberal-animation.jpg", link: "https://open.spotify.com/album/2GCHIqzroqpjQwszmUdk5F" },
-  { title: "S&M Airlines", cover: "Assets/s-and-m-airlines.jpg", link: "https://open.spotify.com/album/4vM1w3hbxQHcNghS0wg1dF" },
-  { title: "Ribbed", cover: "Assets/ribbed.jpg", link: "https://open.spotify.com/album/6xyLnMyql9hJdI65dyJNif" },
-  { title: "White Trash, Two Heebs and a Bean", cover: "Assets/white-trash-two-heebs-and-a-bean.jpg", link: "https://open.spotify.com/album/5dbWoqjHDExyrEJD9ftnay" },
-  { title: "Punk in Drublic", cover: "Assets/punk-in-drublic.jpg", link: "https://open.spotify.com/album/6Z8BYH27wINoUk4QMUx7gh" },
-  { title: "Heavy Petting Zoo", cover: "Assets/heavy-petting-zoo.jpg", link: "https://open.spotify.com/album/5SoeTpVu2MFq5RlCsdRBf2" },
-  { title: "So Long and Thanks for All the Shoes", cover: "Assets/so-long-and-thanks-for-all-the-shoes.jpg", link: "https://open.spotify.com/album/37hvw6OVfRLktCmFcU9zHE" },
-  { title: "Pump Up the Valuum", cover: "Assets/pump-up-the-valuum.jpg", link: "https://open.spotify.com/album/0D6YPfv9u2JHdp1kiieR25" },
-  { title: "The War on Errorism", cover: "Assets/the-war-on-errorism.jpg", link: "https://open.spotify.com/album/0LW2FwC8ay4hXNDzaw7jWY" },
-  { title: "Wolves in Wolves’ Clothing", cover: "Assets/wolves-in-wolves-clothing.jpg", link: "https://open.spotify.com/album/0bb9iLMHdUJhFIVwOars3P" },
-  { title: "Coaster", cover: "Assets/coaster.jpg", link: "https://open.spotify.com/album/5l2QTQ0OoyQw9luosyCe9X" },
-  { title: "Self Entitled", cover: "Assets/self-entitled.jpg", link: "https://open.spotify.com/album/3yLkOvGA3vHtwEyqMcnp18" },
-  { title: "First Ditch Effort", cover: "Assets/first-ditch-effort.jpg", link: "https://open.spotify.com/album/2WJFIzmyJ6Egq00seat7hy" },
-  { title: "Single Album", cover: "Assets/single-album.jpg", link: "https://open.spotify.com/album/7clMEugC4qJ1ApbscpXsaL" },
-  { title: "Double Album", cover: "Assets/double-album.jpg", link: "https://open.spotify.com/album/4mJ4PBk5yHl3xuyHkly85n" },
-  { title: "Half Album", cover: "Assets/half-album.jpg", link: "https://open.spotify.com/album/6TabKLBAyynahNuuxaKGOD" },
-  { title: "Maximum RocknRoll", cover: "Assets/maximum-rocknroll.jpg", link: "https://open.spotify.com/album/5iGh6l7JnaIfw7x1Tz4mnj" },
-  { title: "45 or 46 Songs That Weren’t Good Enough to Go on Our Other Records", cover: "Assets/45-or-46-songs.jpg", link: "https://open.spotify.com/album/4uVWzS36kkWNFOXUjSym8g" },
-  { title: "The Longest EP", cover: "Assets/the-longest-ep.jpg", link: "https://open.spotify.com/album/2PxPjYo7QT9Utmz0seSLjW" },
-  { title: "Backstage Passport Soundtrack", cover: "Assets/backstage-passport.jpg", link: "https://open.spotify.com/album/0eQbe8kRqqeQ9c1ePfd2QW" },
-  { title: "I Heard They Suck Live!!", cover: "Assets/i-heard-they-suck-live.jpg", link: "https://open.spotify.com/album/1mV82C6196W7GvOS8yoAeM" },
-  { title: "They’ve Actually Gotten Worse Live!", cover: "Assets/theyve-actually-gotten-worse-live.jpg", link: "https://open.spotify.com/album/49Xhg2MpQBNbMqr1FGdFdX" },
-  { title: "The Splits", cover: "Assets/the-splits.jpg", link: "https://open.spotify.com/album/1V0jqCyz5StIhGp16Ggdz7" },
-  { title: "The Decline", cover: "Assets/the-decline.jpg", link: "https://open.spotify.com/album/0LW2FwC8ay4hXNDzaw7jWY" }
-];
 
-const STAR_ROWS = 1;
-const bodyRowStructure = [1,2,3,4,5,6];
-const trunkHeight = 2;
-const POSITIONS_COUNT = STAR_ROWS + bodyRowStructure.reduce((a,b)=>a+b,0) + trunkHeight;
+  <!-- Popup Modal -->
+  <div id="albumModal">
+    <div id="albumContent">
+      <img id="albumCover" alt="Album cover" />
+      <h3 id="albumTitle"></h3>
+      <div id="albumYear"></div>
 
-const STORAGE_PREFIX = "nofx_tree_v10_";
-const KEY_ALBUMS = STORAGE_PREFIX + "albums";
-const KEY_DOOR_NUMBERS = STORAGE_PREFIX + "doors";
-const KEY_OPENED = STORAGE_PREFIX + "opened";
+      <button id="spotifyBtn" class="spotify-btn">
+        <img
+          src="Assets/spotify-icon.png"
+          alt="Spotify"
+        />
+        <span>Listen</span>
+      </button>
 
-function shuffle(array){
-  for(let i=array.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [array[i],array[j]]=[array[j],array[i]];
-  }
-  return array;
-}
+      <button
+        class="modal-close-btn"
+        onclick="closeModal()"
+      >
+        Close
+      </button>
+    </div>
+  </div>
 
-function load(key,f){ try{const x=localStorage.getItem(key); return x? JSON.parse(x) : f;} catch{ return f;} }
-function save(key,v){ localStorage.setItem(key, JSON.stringify(v)); }
+  <script>
+    // ---- Album data (title, year, cover, Spotify link) ----
+    const albums = [
+      {
+        title: "Liberal Animation",
+        year: 1988,
+        cover: "Assets/liberal-animation.jpg",
+        link: "https://open.spotify.com/album/2GCHIqzroqpjQwszmUdk5F",
+      },
+      {
+        title: "S&M Airlines",
+        year: 1989,
+        cover: "Assets/s-and-m-airlines.jpg",
+        link: "https://open.spotify.com/album/4vM1w3hbxQHcNghS0wg1dF",
+      },
+      {
+        title: "Ribbed",
+        year: 1991,
+        cover: "Assets/ribbed.jpg",
+        link: "https://open.spotify.com/album/6xyLnMyql9hJdI65dyJNif",
+      },
+      {
+        title: "White Trash, Two Heebs and a Bean",
+        year: 1992,
+        cover: "Assets/white-trash-two-heebs-and-a-bean.jpg",
+        link: "https://open.spotify.com/album/5dbWoqjHDExyrEJD9ftnay",
+      },
+      {
+        title: "Punk in Drublic",
+        year: 1994,
+        cover: "Assets/punk-in-drublic.jpg",
+        link: "https://open.spotify.com/album/6Z8BYH27wINoUk4QMUx7gh",
+      },
+      {
+        title: "Heavy Petting Zoo",
+        year: 1996,
+        cover: "Assets/heavy-petting-zoo.jpg",
+        link: "https://open.spotify.com/album/5SoeTpVu2MFq5RlCsdRBf2",
+      },
+      {
+        title: "So Long and Thanks for All the Shoes",
+        year: 1997,
+        cover: "Assets/so-long-and-thanks-for-all-the-shoes.jpg",
+        link: "https://open.spotify.com/album/37hvw6OVfRLktCmFcU9zHE",
+      },
+      {
+        title: "Pump Up the Valuum",
+        year: 2000,
+        cover: "Assets/pump-up-the-valuum.jpg",
+        link: "https://open.spotify.com/album/37hvw6OVfRLktCmFcU9zHE",
+      },
+      {
+        title: "The War on Errorism",
+        year: 2003,
+        cover: "Assets/the-war-on-errorism.jpg",
+        link: "https://open.spotify.com/album/0D6YPfv9u2JHdp1kiieR25",
+      },
+      {
+        title: "Wolves in Wolves’ Clothing",
+        year: 2006,
+        cover: "Assets/wolves-in-wolves-clothing.jpg",
+        link: "https://open.spotify.com/album/0bb9iLMHdUJhFIVwOars3P",
+      },
+      {
+        title: "Coaster",
+        year: 2009,
+        cover: "Assets/coaster.jpg",
+        link: "https://open.spotify.com/album/5l2QTQ0OoyQw9luosyCe9X",
+      },
+      {
+        title: "Self Entitled",
+        year: 2012,
+        cover: "Assets/self-entitled.jpg",
+        link: "https://open.spotify.com/album/3yLkOvGA3vHtwEyqMcnp18",
+      },
+      {
+        title: "First Ditch Effort",
+        year: 2016,
+        cover: "Assets/first-ditch-effort.jpg",
+        link: "https://open.spotify.com/album/2WJFIzmyJ6Egq00seat7hy",
+      },
+      {
+        title: "Single Album",
+        year: 2021,
+        cover: "Assets/single-album.jpg",
+        link: "https://open.spotify.com/album/7clMEugC4qJ1ApbscpXsaL",
+      },
+      {
+        title: "Double Album",
+        year: 2021,
+        cover: "Assets/double-album.jpg",
+        link: "https://open.spotify.com/album/4mJ4PBk5yHl3xuyHkly85n",
+      },
+      {
+        title: "Half Album",
+        year: 2023,
+        cover: "Assets/half-album.jpg",
+        link: "https://open.spotify.com/album/6TabKLBAyynahNuuxaKGOD",
+      },
+      {
+        title: "Maximum RocknRoll",
+        year: 1984,
+        cover: "Assets/maximum-rocknroll.jpg",
+        link: "https://open.spotify.com/album/5iGh6l7JnaIfw7x1Tz4mnj",
+      },
+      {
+        title:
+          "45 or 46 Songs That Weren’t Good Enough to Go on Our Other Records",
+        year: 2002,
+        cover: "Assets/45-or-46-songs.jpg",
+        link: "https://open.spotify.com/album/4uVWzS36kkWNFOXUjSym8g",
+      },
+      {
+        title: "The Longest EP",
+        year: 2006,
+        cover: "Assets/the-longest-ep.jpg",
+        link: "https://open.spotify.com/album/2PxPjYo7QT9Utmz0seSLjW",
+      },
+      {
+        title: "Backstage Passport Soundtrack",
+        year: 2008,
+        cover: "Assets/backstage-passport.jpg",
+        link: "https://open.spotify.com/album/0eQbe8kRqqeQ9c1ePfd2QW",
+      },
+      {
+        title: "I Heard They Suck Live!!",
+        year: 1995,
+        cover: "Assets/i-heard-they-suck-live.jpg",
+        link: "https://open.spotify.com/album/1mV82C6196W7GvOS8yoAeM",
+      },
+      {
+        title: "They’ve Actually Gotten Worse Live!",
+        year: 2007,
+        cover: "Assets/theyve-actually-gotten-worse-live.jpg",
+        link: "https://open.spotify.com/album/49Xhg2MpQBNbMqr1FGdFdX",
+      },
+      {
+        title: "The Splits",
+        year: null,
+        cover: "Assets/the-splits.jpg",
+        link: "https://open.spotify.com/album/1V0jqCyz5StIhGp16Ggdz7",
+      },
+      {
+        title: "The Decline",
+        year: 1999,
+        cover: "Assets/the-decline.jpg",
+        link: "https://open.spotify.com/album/0LW2FwC8ay4hXNDzaw7jWY",
+      },
+    ];
 
-let shuffledAlbums = load(KEY_ALBUMS, null);
-if(!shuffledAlbums || shuffledAlbums.length !== albums.length){
-  shuffledAlbums = shuffle([...albums]);
-  save(KEY_ALBUMS, shuffledAlbums);
-}
+    // layout constants
+    const STAR_ROWS = 1;
+    const bodyRowStructure = [1, 2, 3, 4, 5, 6]; // 21
+    const trunkHeight = 2; // 2
+    const POSITIONS_COUNT =
+      STAR_ROWS +
+      bodyRowStructure.reduce((a, b) => a + b, 0) +
+      trunkHeight; // 24
 
-let doorNumbers = load(KEY_DOOR_NUMBERS, null);
-if(!doorNumbers || doorNumbers.length !== POSITIONS_COUNT || doorNumbers[0] !== 24){
-  const nums = shuffle(Array.from({length:23}, (_, i)=>i+1));
-  doorNumbers = [24, ...nums];
-  save(KEY_DOOR_NUMBERS, doorNumbers);
-}
+    // door colors (deep green, warm red, muted gold, pine green, burgundy)
+    const doorColors = [
+      "#0c3b2e", // deep green
+      "#9c1b1b", // warm red
+      "#c8a34b", // muted gold
+      "#295b42", // pine green
+      "#5a0f1c", // burgundy
+    ];
 
-let opened = load(KEY_OPENED, {});
+    // storage keys
+    const STORAGE_PREFIX = "nofx_tree_v12_";
+    const KEY_ALBUMS = STORAGE_PREFIX + "albums";
+    const KEY_DOOR_NUMBERS = STORAGE_PREFIX + "doors";
+    const KEY_OPENED = STORAGE_PREFIX + "opened";
+    const KEY_COLORS = STORAGE_PREFIX + "colors";
+    const KEY_OVERRIDE = STORAGE_PREFIX + "override";
 
-const calendarEl = document.getElementById("calendar");
-const trunkEl = document.getElementById("trunk");
-const doorEls = [];
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
 
-function setDoorContent(el,i){
-  const n = doorNumbers[i];
-  const album = shuffledAlbums[i];
-  if(opened[i]){
-    el.classList.add("opened");
-    el.innerHTML = `
-      <img class="cover" src="${album.cover}" alt="${album.title} cover">
-      <span class="door-number">${n}</span>
-    `;
-  } else {
-    el.classList.remove("opened");
-    el.innerHTML = `<span class="door-number">${n}</span>`;
-  }
-}
+    function load(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return fallback;
+        return JSON.parse(raw);
+      } catch {
+        return fallback;
+      }
+    }
 
-let index = 0;
+    function save(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
 
-/* STAR */
-const starRow = document.createElement("div");
-starRow.className = "row";
+    // NZ date (day & month)
+    function getNzDay() {
+      const dayStr = new Intl.DateTimeFormat("en-NZ", {
+        timeZone: "Pacific/Auckland",
+        day: "numeric",
+      }).format(new Date());
+      return parseInt(dayStr, 10);
+    }
 
-const star = document.createElement("div");
-star.className = "day star";
-doorEls[index] = star;
-setDoorContent(star, index);
-starRow.appendChild(star);
-calendarEl.appendChild(starRow);
-index++;
+    function getNzMonth() {
+      const monthStr = new Intl.DateTimeFormat("en-NZ", {
+        timeZone: "Pacific/Auckland",
+        month: "numeric",
+      }).format(new Date());
+      return parseInt(monthStr, 10);
+    }
 
-/* TREE BODY */
-bodyRowStructure.forEach(size=>{
-  const row = document.createElement("div");
-  row.className = "row";
-  for(let i=0; i<size; i++){
-    const d = document.createElement("div");
-    d.className = "day";
-    doorEls[index] = d;
-    setDoorContent(d, index);
-    row.appendChild(d);
-    index++;
-  }
-  calendarEl.appendChild(row);
-});
+    const todayNzDay = getNzDay();
+    const todayNzMonth = getNzMonth();
 
-/* TRUNK */
-for(let t=0; t<trunkHeight; t++){
-  const d = document.createElement("div");
-  d.className = "day";
-  doorEls[index] = d;
-  setDoorContent(d, index);
-  trunkEl.appendChild(d);
-  index++;
-}
+    // admin override
+    let adminOverride = !!load(KEY_OVERRIDE, false);
 
-// Add click handler to every door
-doorEls.forEach((el, i) => {
-  el.addEventListener("click", () => openDoor(i));
-});
+    // shuffle albums once per visitor
+    let shuffledAlbums = load(KEY_ALBUMS, null);
+    if (!shuffledAlbums || shuffledAlbums.length !== albums.length) {
+      shuffledAlbums = shuffle([...albums]);
+      save(KEY_ALBUMS, shuffledAlbums);
+    }
 
-function openDoor(i){
-  opened[i] = true;
-  save(KEY_OPENED, opened);
+    // assign numbers (1-24) to positions but ensure star (idx 0) is 24
+    let doorNumbers = load(KEY_DOOR_NUMBERS, null);
+    if (
+      !doorNumbers ||
+      doorNumbers.length !== POSITIONS_COUNT ||
+      doorNumbers[0] !== 24
+    ) {
+      const rest = shuffle(
+        Array.from({ length: 23 }, (_, i) => i + 1) // 1..23
+      );
+      doorNumbers = [24, ...rest];
+      save(KEY_DOOR_NUMBERS, doorNumbers);
+    }
 
-  const album = shuffledAlbums[i];
-  document.getElementById("albumCover").src = album.cover;
-  document.getElementById("albumTitle").innerText = album.title;
+    // opened state per position
+    let opened = load(KEY_OPENED, {});
 
-  document.getElementById("spotifyBtn").onclick = () => {
-    window.open(album.link, "_blank");
-  };
+    // per-position color indices (only meaningful for tree body, not star/trunk)
+    let colorMap = load(KEY_COLORS, null);
+    if (!colorMap || colorMap.length !== POSITIONS_COUNT) {
+      colorMap = Array.from(
+        { length: POSITIONS_COUNT },
+        () => Math.floor(Math.random() * doorColors.length)
+      );
+      save(KEY_COLORS, colorMap);
+    }
 
-  document.getElementById("albumModal").style.display = "flex";
-  setDoorContent(doorEls[i], i);
-}
+    const calendarEl = document.getElementById("calendar");
+    const trunkEl = document.getElementById("trunk");
+    const doorEls = [];
 
-function closeModal(){
-  document.getElementById("albumModal").style.display = "none";
-}
+    function setDoorContent(el, index) {
+      const number = doorNumbers[index];
+      const album = shuffledAlbums[index];
 
-window.closeModal = closeModal;
+      // color handling: index 0 is star, last 2 are trunk
+      if (index > 0 && index < POSITIONS_COUNT - trunkHeight) {
+        // tree body
+        const colorIdx = colorMap[index] % doorColors.length;
+        el.style.backgroundColor = doorColors[colorIdx];
+      }
 
-/* Snow effect */
-function snow(){
-  const s = document.createElement("div");
-  s.className = "snowflake";
-  s.style.left = Math.random()*window.innerWidth + "px";
-  s.style.fontSize = Math.random()*18 + 12 + "px";
-  s.style.animationDuration = Math.random()*5 + 5 + "s";
-  s.style.opacity = Math.random();
-  s.textContent = "❄";
-  document.body.appendChild(s);
-  setTimeout(()=>s.remove(),10000);
-}
-setInterval(snow, 200);
+      if (opened[index]) {
+        el.classList.add("opened");
+        el.innerHTML = `
+          <img class="cover" src="${album.cover}" alt="${album.title} cover">
+          <span class="door-number">${number}</span>
+        `;
+      } else {
+        el.classList.remove("opened");
+        el.innerHTML = `<span class="door-number">${number}</span>`;
+      }
+    }
 
-</script>
+    // build tree
+    let positionIndex = 0;
+
+    // star row (index 0)
+    const starRow = document.createElement("div");
+    starRow.className = "row";
+
+    const starDoor = document.createElement("div");
+    starDoor.className = "day star";
+    doorEls[positionIndex] = starDoor;
+    setDoorContent(starDoor, positionIndex);
+    starRow.appendChild(starDoor);
+    calendarEl.appendChild(starRow);
+    positionIndex++;
+
+    // body rows
+    bodyRowStructure.forEach((rowSize) => {
+      const row = document.createElement("div");
+      row.className = "row";
+      for (let i = 0; i < rowSize; i++) {
+        const door = document.createElement("div");
+        door.className = "day";
+        doorEls[positionIndex] = door;
+        setDoorContent(door, positionIndex);
+        row.appendChild(door);
+        positionIndex++;
+      }
+      calendarEl.appendChild(row);
+    });
+
+    // trunk tiles (last 2 positions)
+    for (let t = 0; t < trunkHeight; t++) {
+      const door = document.createElement("div");
+      door.className = "day";
+      doorEls[positionIndex] = door;
+      setDoorContent(door, positionIndex);
+      trunkEl.appendChild(door);
+      positionIndex++;
+    }
+
+    // helper: can we open this door? (respect NZ day + override)
+    function canOpenDoor(index) {
+      if (adminOverride) return true;
+      const number = doorNumbers[index];
+      if (opened[index]) return true; // already opened, allow re-open
+      return number <= todayNzDay;
+    }
+
+    // attach click handlers to all doors
+    doorEls.forEach((el, index) => {
+      el.addEventListener("click", () => {
+        if (!canOpenDoor(index)) {
+          // locked, reject with shake
+          el.classList.add("locked-shake");
+          setTimeout(() => {
+            el.classList.remove("locked-shake");
+          }, 300);
+          return;
+        }
+
+        // opening animation
+        el.classList.add("opening");
+        setTimeout(() => {
+          el.classList.remove("opening");
+        }, 250);
+
+        openDoor(index);
+      });
+    });
+
+    // modal & Spotify wiring
+    const albumModal = document.getElementById("albumModal");
+    const albumCoverEl = document.getElementById("albumCover");
+    const albumTitleEl = document.getElementById("albumTitle");
+    const albumYearEl = document.getElementById("albumYear");
+    const spotifyBtn = document.getElementById("spotifyBtn");
+    const surpriseGiftBtn = document.getElementById("surpriseGiftBtn");
+
+    function openDoor(index) {
+      opened[index] = true;
+      save(KEY_OPENED, opened);
+
+      const album = shuffledAlbums[index];
+
+      // update door visuals
+      setDoorContent(doorEls[index], index);
+
+      // populate modal
+      albumCoverEl.src = album.cover;
+      albumTitleEl.textContent = album.title;
+
+      if (album.year) {
+        albumYearEl.textContent = `(${album.year})`;
+        albumYearEl.style.display = "block";
+      } else {
+        albumYearEl.textContent = "";
+        albumYearEl.style.display = "none";
+      }
+
+      spotifyBtn.onclick = () => {
+        if (album.link) {
+          window.open(album.link, "_blank");
+        }
+      };
+
+      albumModal.style.display = "flex";
+    }
+
+    function closeModal() {
+      albumModal.style.display = "none";
+    }
+    window.closeModal = closeModal;
+
+    // surprise gift button (25th or override)
+    function updateSurpriseGiftVisibility() {
+      const is25th = todayNzDay === 25; // day-only is enough for your use-case
+      if (is25th || adminOverride) {
+        surpriseGiftBtn.style.display = "inline-flex";
+      } else {
+        surpriseGiftBtn.style.display = "none";
+      }
+    }
+
+    surpriseGiftBtn.addEventListener("click", () => {
+      window.open(
+        "https://m.youtube.com/watch?v=Ovi1SKwfyxU&pp=ygUWeG1hcyBoYXMgYmVlbiB4ZWQgbm9meA%3D%3D",
+        "_blank"
+      );
+    });
+
+    updateSurpriseGiftVisibility();
+
+    // admin override: Shift + O -> prompt for code "fatmike"
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "O" && e.shiftKey) {
+        const code = prompt("Enter override code:");
+        if (code === "fatmike") {
+          adminOverride = true;
+          save(KEY_OVERRIDE, true);
+          alert("Admin override enabled");
+          updateSurpriseGiftVisibility();
+        }
+      }
+    });
+
+    // snow effect
+    function spawnSnowflake() {
+      const s = document.createElement("div");
+      s.className = "snowflake";
+      s.textContent = "❄";
+      s.style.left = Math.random() * window.innerWidth + "px";
+      s.style.fontSize = 10 + Math.random() * 16 + "px";
+      s.style.animationDuration = 5 + Math.random() * 5 + "s";
+      s.style.opacity = 0.4 + Math.random() * 0.6;
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 11000);
+    }
+
+    setInterval(spawnSnowflake, 220);
+  </script>
 </body>
-</html> 
+</html>
