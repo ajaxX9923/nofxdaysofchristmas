@@ -812,13 +812,11 @@ font-size: 1.05rem;
       albumCoverEl.src = album.cover;
       albumTitleEl.textContent = album.title;
 
-      if (album.year) {
-        albumYearEl.textContent = `(${album.year})`;
-        albumYearEl.style.display = "block";
-      } else {
-        albumYearEl.textContent = "";
-        albumYearEl.style.display = "none";
-      }
+    if (album.year) {
+  albumTitleEl.textContent = `${album.title} (${album.year})`;
+} else {
+  albumTitleEl.textContent = album.title;
+}
 
       spotifyBtn.onclick = () => {
         if (album.link) {
