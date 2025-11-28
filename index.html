@@ -129,3 +129,41 @@ const albums = [
     genius: "https://genius.com/Nofx-the-decline-lyrics"
   }
 ];
+<!-- Popup Modal -->
+  <div id="albumModal">
+    <div id="albumContent">
+      <img id="albumCover" alt="Album cover" />
+      <h3 id="albumTitle"></h3>
+      <div id="albumYear"></div>
+
+      <div id="albumLinks">
+        <div class="icon-wrapper">
+          <img
+            id="spotifyIcon"
+            class="album-icon"
+            src="Assets/spotify-icon.png"
+            alt="Spotify"
+          />
+          <div id="spotifyMenu" class="link-menu"></div>
+        </div>
+
+        <div class="icon-wrapper">
+          <img
+            id="geniusIcon"
+            class="album-icon"
+            src="Assets/genius-logo.png"
+            alt="Genius"
+          />
+          <div id="geniusMenu" class="link-menu"></div>
+        </div>
+      </div>
+
+      <button
+        class="modal-close-btn"
+        onclick="closeModal()"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+  
