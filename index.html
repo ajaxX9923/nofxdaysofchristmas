@@ -524,6 +524,14 @@
           />
           <div id="geniusMenu" class="link-menu"></div>
         </div>
+<div class="icon-wrapper">
+  <img
+    id="shareIcon"
+    class="album-icon"
+    src="Assets/share-icon.png"
+    alt="Share"
+  />
+</div>
 
       </div>
 
@@ -899,6 +907,8 @@ const geniusMenu     = document.getElementById("geniusMenu");
 const surpriseGiftBtn = document.getElementById("surpriseGiftBtn");
 
 let currentAlbum = null;
+let lastOpenedIndex = null;
+
 
 /* Clear popup menus */
 function clearMenus() {
@@ -923,7 +933,7 @@ function buildMenu(menuEl, items) {
   });
 }
 
-/* -------- OPEN DOOR (SHOW MODAL) -------- */
+lastOpenedIndex = index;
 function openDoor(index) {
   opened[index] = true;
   save(KEY_OPENED, opened);
