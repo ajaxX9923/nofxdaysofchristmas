@@ -43,6 +43,11 @@
       overflow-x: hidden;
     }
 
+.day.opened img.cover {
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+}
+
     body {
       font-family: Arial, sans-serif;
       background: linear-gradient(to bottom, #ffefef, #fff5f0);
@@ -542,7 +547,7 @@ const albums = [
     genius: "https://genius.com/albums/Nofx/Heavy-petting-zoo"
   },
   { title: "So Long and Thanks for All the Shoes", year: 1997, cover: "Assets/so-long-and-thanks-for-all-the-shoes.jpg",
-    spotify: "https://open.spotify.com/album/37hvw6OVfRLktCmFcU9zHE",
+    spotify: "https://open.spotify.com/album/1EaixZGxjvdZIsRiyMBZDb",
     genius: "https://genius.com/albums/Nofx/So-long-and-thanks-for-all-the-shoes"
   },
   { title: "Pump Up the Valuum", year: 2000, cover: "Assets/pump-up-the-valuum.jpg",
@@ -579,7 +584,7 @@ const albums = [
   },
   { title: "Half Album", year: 2023, cover: "Assets/half-album.jpg",
     spotify: "https://open.spotify.com/album/6TabKLBAyynahNuuxaKGOD",
-    genius: null
+    genius: "https://genius.com/albums/Nofx/Half-album"
   },
 
   { title: "The Longest EP", year: 2010, cover: "Assets/the-longest-ep.jpg",
@@ -587,13 +592,13 @@ const albums = [
     genius: "https://genius.com/albums/Nofx/The-longest-ep"
   },
   { title: "Stoke Extinguisher", year: 2013, cover: "Assets/stoke-extinguisher.jpg",
-    spotify: "https://open.spotify.com/album/2L77hrvjFIVXh8r2s1zTvz",
-    genius: "https://genius.com/Nofx-stoke-extinguisher-lyrics"
+    spotify: "https://open.spotify.com/album/0SS7CfFFNUNdpAgL3NRma7",
+    genius:  "https://genius.com/albums/Nofx/Stoke-extinguisher"
   },
 
   { title: "Maximum RocknRoll", year: 1984, cover: "Assets/maximum-rocknroll.jpg",
     spotify: "https://open.spotify.com/album/5iGh6l7JnaIfw7x1Tz4mnj",
-    genius: "https://genius.com/albums/Nofx/Maximum-rocknroll"
+    genius: "https://genius.com/albums/Nofx/The-album"
   },
   { title: "45 or 46 Songs…", year: 2002, cover: "Assets/45-or-46-songs.jpg",
     spotify: "https://open.spotify.com/album/4uVWzS36kkWNFOXUjSym8g",
@@ -602,7 +607,7 @@ const albums = [
 
   { title: "Backstage Passport Soundtrack", year: 2008, cover: "Assets/backstage-passport.jpg",
     spotify: "https://open.spotify.com/album/0eQbe8kRqqeQ9c1ePfd2QW",
-    genius: null
+    genius: "https://genius.com/albums/Nofx/Backstage-passport-soundtrack"
   },
 
   /* ---- COMBINED LIVE DOOR ---- */
@@ -616,26 +621,37 @@ const albums = [
     ],
     geniusMenu: [
       { name: "I Heard They Suck Live!!", url: "https://genius.com/albums/Nofx/I-heard-they-suck-live" },
-      { name: "…Gotten Worse Live!", url: "https://genius.com/Nofx-the-quass-lyrics" }
+     { name: "They’ve Actually Gotten Worse Live!", url: "https://genius.com/albums/Nofx/Theyve-actually-gotten-worse-live" }
     ]
   },
 
   /* ---- COMBINED SPLITS DOOR ---- */
-  {
-    title: "The Splits",
-    year: null,
-    cover: "Assets/the-splits.jpg",
-    spotifyMenu: [
-      { name: "BYO Split Vol.3", url: "" }, 
-      { name: "West Coast vs Wessex", url: "" },
-      { name: "NOFX / The Spits Split", url: "https://open.spotify.com/album/1V0jqCyz5StIhGp16Ggdz7" }
-    ],
-    geniusMenu: [
-      { name: "BYO Split Vol.3", url: "https://genius.com/albums/Nofx/Byo-split-series-volume-iii" },
-      { name: "West Coast vs Wessex", url: "https://genius.com/albums/Nofx/West-coast-vs-wessex" },
-      { name: "The Spits Split", url: "https://genius.com/Nofx-jenny-elise-lyrics" }
-    ]
-  },
+ {
+  title: "The Splits",
+  year: null,
+  cover: "Assets/the-splits.jpg",
+  spotifyMenu: [
+    { 
+      name: "West Coast vs Wessex", 
+      url: "https://open.spotify.com/album/1V0jqCyz5StIhGp16Ggdz7" 
+    },
+    { 
+      name: "BYO Split Series Vol.3 (NOFX/Rancid)", 
+      url: "https://open.spotify.com/playlist/54l8ejeS0JXxKkkBNc7dpW" 
+    }
+  ],
+  geniusMenu: [
+    { 
+      name: "West Coast vs Wessex", 
+      url: "https://genius.com/albums/Nofx/West-coast-vs-wessex" 
+    },
+    { 
+      name: "BYO Split Series Vol.3 (NOFX/Rancid)", 
+      url: "https://genius.com/albums/Nofx/Byo-split-series-volume-iii" 
+    }
+  ]
+},
+
 
   { title: "The Decline", year: 1999, cover: "Assets/the-decline.jpg",
     spotify: "https://open.spotify.com/album/0LW2FwC8ay4hXNDzaw7jWY",
@@ -820,10 +836,23 @@ for (let t = 0; t < trunkHeight; t++) {
 
 /* -------- DOOR OPEN PERMISSIONS -------- */
 function canOpenDoor(index) {
+  const number = doorNumbers[index];
+
+  // Admin override always allows opening
   if (adminOverride) return true;
+
+  // Prevent ANY opening before 1 December NZ time
+  if (todayNzMonth < 12) return false;
+
+  // Doors unlock sequentially starting Dec 1
+  if (todayNzMonth === 12 && number <= todayNzDay) return true;
+
+  // Already-opened doors can be re-opened
   if (opened[index]) return true;
-  return doorNumbers[index] <= todayNzDay;
+
+  return false;
 }
+
 
 /* -------- DOOR CLICK HANDLERS -------- */
 doorEls.forEach((el, index) => {
