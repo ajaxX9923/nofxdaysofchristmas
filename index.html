@@ -217,7 +217,22 @@
     .day.opening {
       animation: popOpen 0.25s ease-out;
     }
+#shareIcon {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  border-radius: 50%;
+  background: #ffffff;
+  padding: 4px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
 
+#shareIcon:hover {
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 0 8px rgba(0,0,0,0.35);
+}
+    
     @keyframes popOpen {
       0% {
         transform: scale(0.92);
@@ -1026,11 +1041,90 @@ function spawnSnowflake() {
 }
 
 setInterval(spawnSnowflake, 220);
-/* ------- EVERYTHING BELOW IS IDENTICAL TO THE VERSION I SENT YOU ------- */
-/* Door layout, randomisation, NZ date lock, openDoor logic, popups, menus,
-   snow, surprise button, override, etc. 
-   (You already have it exactly in the full version above.)
-*/
+async function createShareCard(album, dayNumber) {
+  return new Promise((resolve) => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
 
-/* If you want I can resend the rest cleanly as well — just say “send rest clean”. */
+    // Card size (IG-friendly)
+    canvas.width = 1080;
+    canvas.height = 1920;
+
+    // Background color (matches your card)
+    ctx.fillStyle = "#5f6f34"; // your green tone
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Load album cover
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = album.cover;
+
+    img.onload = () => {
+      // Draw album cover
+      const imgSize = 900;
+      const imgX = (canvas.width - imgSize) / 2;
+      const imgY = 300;
+
+      ctx.drawImage(img, imgX, imgY, imgSize, imgSize);
+
+      // Title: "My album for Day X"
+      ctx.fillStyle = "white";
+      ctx.font = "bold 70px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(`My album for Day ${dayNumber}`, canvas.width / 2, 180);
+
+      // Album Title
+      ctx.font = "bold 80px Arial";
+      ctx.fillText(album.title, canvas.width / 2, imgY + imgSize + 140);
+
+      // Artist (NOFX)
+      ctx.font = "50px Arial";
+      ctx.fillText("NOFX", canvas.width / 2, imgY + imgSize + 220);
+
+      // Footer "NOFX Days of Christmas"
+      ctx.font = "bold 55px Arial";
+      ctx.fillText("NOFX Days of Christmas", canvas.width / 2, canvas.height - 140);
+
+      resolve(canvas.toDataURL("image/png"));
+    };
+  });
+}
+const shareIcon = document.getElementById("shareIcon");
+
+shareIcon.addEventListener("click", async () => {
+  if (!currentAlbum || lastOpenedIndex === null) {
+    alert("Open a door first!");
+    return;
+  }
+
+  const dayNumber = doorNumbers[lastOpenedIndex];
+
+  // Build the share card
+  const imageData = await createShareCard(currentAlbum, dayNumber);
+
+  // Mobile share sheet
+  if (navigator.share) {
+    const response = await fetch(imageData);
+    const blob = await response.blob();
+    const file = new File([blob], "nofx-share.png", { type: "image/png" });
+
+    try {
+      await navigator.share({
+        files: [file],
+        title: "NOFX Days of Christmas",
+        text: `My album for Day ${dayNumber}!`,
+      });
+      return;
+    } catch (err) {
+      console.log("Share canceled");
+    }
+  }
+
+  // Desktop fallback: download image
+  const a = document.createElement("a");
+  a.href = imageData;
+  a.download = `day-${dayNumber}-nofx.png`;
+  a.click();
+});
+
     </script>
