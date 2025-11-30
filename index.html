@@ -940,6 +940,7 @@ function openDoor(index) {
 
   const album = shuffledAlbums[index];
   currentAlbum = album;
+  lastOpenedIndex = index;
 
   setDoorContent(doorEls[index], index);
 
