@@ -932,6 +932,7 @@ function buildMenu(menuEl, items) {
     menuEl.appendChild(btn);
   });
 }
+    
 function openDoor(index) {
   opened[index] = true;
   save(KEY_OPENED, opened);
@@ -1027,7 +1028,7 @@ updateSurpriseGiftVisibility();
 document.addEventListener("keydown", (e) => {
   if (e.key === "O" && e.shiftKey) {
     const code = prompt("Enter override code:");
-    if (code === "fatmike1") {
+    if (code === "fatmike") {
       adminOverride = true;
       save(KEY_OVERRIDE, true);
       alert("Admin override enabled");
